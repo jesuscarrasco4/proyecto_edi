@@ -7,6 +7,7 @@ CPP_SRCS += \
 ../src/Artista.cpp \
 ../src/Cancion.cpp \
 ../src/Fecha.cpp \
+../src/PlayList.cpp \
 ../src/Pruebas.cpp \
 ../src/PruebasArtista.cpp \
 ../src/PruebasCancion.cpp \
@@ -17,6 +18,7 @@ CPP_DEPS += \
 ./src/Artista.d \
 ./src/Cancion.d \
 ./src/Fecha.d \
+./src/PlayList.d \
 ./src/Pruebas.d \
 ./src/PruebasArtista.d \
 ./src/PruebasCancion.d \
@@ -27,6 +29,7 @@ OBJS += \
 ./src/Artista.o \
 ./src/Cancion.o \
 ./src/Fecha.o \
+./src/PlayList.o \
 ./src/Pruebas.o \
 ./src/PruebasArtista.o \
 ./src/PruebasCancion.o \
@@ -46,7 +49,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/Artista.d ./src/Artista.o ./src/Cancion.d ./src/Cancion.o ./src/Fecha.d ./src/Fecha.o ./src/Pruebas.d ./src/Pruebas.o ./src/PruebasArtista.d ./src/PruebasArtista.o ./src/PruebasCancion.d ./src/PruebasCancion.o ./src/Usuario.d ./src/Usuario.o ./src/main.d ./src/main.o
+	-$(RM) ./src/Artista.d ./src/Artista.o ./src/Cancion.d ./src/Cancion.o ./src/Fecha.d ./src/Fecha.o ./src/PlayList.d ./src/PlayList.o ./src/Pruebas.d ./src/Pruebas.o ./src/PruebasArtista.d ./src/PruebasArtista.o ./src/PruebasCancion.d ./src/PruebasCancion.o ./src/Usuario.d ./src/Usuario.o ./src/main.d ./src/main.o
 
 .PHONY: clean-src
 
