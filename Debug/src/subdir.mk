@@ -4,10 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/AlgoritmosListaDPI.cpp \
 ../src/Artista.cpp \
 ../src/Cancion.cpp \
 ../src/Fecha.cpp \
+../src/GestorUsuarios.cpp \
 ../src/PlayList.cpp \
+../src/PruebaGestorUsuarios.cpp \
 ../src/Pruebas.cpp \
 ../src/PruebasArtista.cpp \
 ../src/PruebasCancion.cpp \
@@ -15,10 +18,13 @@ CPP_SRCS += \
 ../src/main.cpp 
 
 CPP_DEPS += \
+./src/AlgoritmosListaDPI.d \
 ./src/Artista.d \
 ./src/Cancion.d \
 ./src/Fecha.d \
+./src/GestorUsuarios.d \
 ./src/PlayList.d \
+./src/PruebaGestorUsuarios.d \
 ./src/Pruebas.d \
 ./src/PruebasArtista.d \
 ./src/PruebasCancion.d \
@@ -26,10 +32,13 @@ CPP_DEPS += \
 ./src/main.d 
 
 OBJS += \
+./src/AlgoritmosListaDPI.o \
 ./src/Artista.o \
 ./src/Cancion.o \
 ./src/Fecha.o \
+./src/GestorUsuarios.o \
 ./src/PlayList.o \
+./src/PruebaGestorUsuarios.o \
 ./src/Pruebas.o \
 ./src/PruebasArtista.o \
 ./src/PruebasCancion.o \
@@ -49,7 +58,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/Artista.d ./src/Artista.o ./src/Cancion.d ./src/Cancion.o ./src/Fecha.d ./src/Fecha.o ./src/PlayList.d ./src/PlayList.o ./src/Pruebas.d ./src/Pruebas.o ./src/PruebasArtista.d ./src/PruebasArtista.o ./src/PruebasCancion.d ./src/PruebasCancion.o ./src/Usuario.d ./src/Usuario.o ./src/main.d ./src/main.o
+	-$(RM) ./src/AlgoritmosListaDPI.d ./src/AlgoritmosListaDPI.o ./src/Artista.d ./src/Artista.o ./src/Cancion.d ./src/Cancion.o ./src/Fecha.d ./src/Fecha.o ./src/GestorUsuarios.d ./src/GestorUsuarios.o ./src/PlayList.d ./src/PlayList.o ./src/PruebaGestorUsuarios.d ./src/PruebaGestorUsuarios.o ./src/Pruebas.d ./src/Pruebas.o ./src/PruebasArtista.d ./src/PruebasArtista.o ./src/PruebasCancion.d ./src/PruebasCancion.o ./src/Usuario.d ./src/Usuario.o ./src/main.d ./src/main.o
 
 .PHONY: clean-src
 

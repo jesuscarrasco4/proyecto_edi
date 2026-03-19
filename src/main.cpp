@@ -5,7 +5,7 @@
 #include "PruebasArtista.h"
 #include "Cancion.h"
 #include "PruebasCancion.h"
-
+#include "PruebaGestorUsuarios.h"
 
 using namespace std;
 
@@ -35,6 +35,6 @@ int main() {
 	// Practica 04
 	pruebasArtista();
 	pruebasCancion();
-
+	pruebasGestorUsuarios();
 	return 0;
 }
