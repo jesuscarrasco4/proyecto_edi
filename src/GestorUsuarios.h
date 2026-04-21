@@ -13,21 +13,49 @@
 #include "Usuario.h"
 #include "ListaDPI.h"
 using namespace std;
+#include "KeyValue.h"
+#include "BSTree.h"
 
+#define LISTA_USUARIOS
 
-class GestorUsuarios {
-private:
-	ListaDPI <Usuario *> *lUsuarios;
-public:
-    GestorUsuarios();                                      // Constructor por defecto [cite: 154]
-    GestorUsuarios(const GestorUsuarios &otro);            // Constructor de copia (composición)
-    ~GestorUsuarios();                                     // Destructor [cite: 156]
+#if defined(LISTA_USUARIOS)
+	class GestorUsuarios {
+	private:
+		ListaDPI <Usuario *> *lUsuarios;
+	public:
+		GestorUsuarios();                                      // Constructor por defecto
+		GestorUsuarios(const GestorUsuarios &otro);            // Constructor de copia (composición)
+		~GestorUsuarios();                                     // Destructor
 
-    // Métodos solicitados
-    void insertar(string id, string nombre, string email, string pass, int d, int m, int a); // [cite: 162]
-    int numElementos() const;                              // Número de usuarios [cite: 165]
-    void mostrar() const;                                  // Muestra todos los usuarios [cite: 166]
-    Usuario* buscar(string apellidosNombre);               // Devuelve la info si lo encuentra [cite: 164]
+		// Métodos solicitados
+		void insertar(string id, string nombre, string email, string pass, int d, int m, int a);
+		int numElementos() const;                              // Número de usuarios
+		void mostrar() const;                                  // Muestra todos los usuarios
+		Usuario* buscar(string apellidosNombre);               // Devuelve la info si lo encuentra
 
-};
+	};
+
+#else
+	class GestorUsuarios{
+	private:
+		BSTree<KeyValue<string, Usuario*>> *aUsuarios;
+
+		// Métodos privados auxiliares necesarios para el árbol
+		void copiarArbol(BSTree<KeyValue<string, Usuario*>> *otroArbol);
+        void mostrarRecursivo(BSTree<KeyValue<string, Usuario*>> *a) const;
+
+	public:
+        GestorUsuarios();
+        GestorUsuarios(const GestorUsuarios &otro);
+        ~GestorUsuarios();
+
+        // Métodos solicitados
+   		void insertar(string id, string nombre, string email, string pass, int d, int m, int a);
+   		int numElementos() const;                              // Número de usuarios
+       	void mostrar() const;                                  // Muestra todos los usuarios
+        Usuario* buscar(string apellidosNombre);               // Devuelve la info si lo encuentra
+
+	}
+#endif
+
 #endif /* GESTORUSUARIOS_H_ */

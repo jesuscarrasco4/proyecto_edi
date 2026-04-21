@@ -75,4 +75,27 @@ void PlayList::eliminarCancion() {
     }
 }
 
+void PlayList::reproducirTodo() {
+    if (colaReproduccion->estaVacia()) {
+        cout << "La PlayList " << nombre << " esta vacia." << endl;
+    } else {
+        cout << "--- Reproduciendo PlayList: " << nombre << " ---" << endl;
+        // En una cola, mostramos y desencolamos/reencolamos o usamos una auxiliar
+        // para no perder los datos si queremos que sea una reproduccion real.
+        // Por ahora, simulamos el acceso al primero:
+        Cancion *actual = colaReproduccion->getPrimero();
+        actual->mostrar();
+    }
+}
+
+//Getters
+string PlayList::getNombre() const {
+	return nombre;
+}
+int PlayList::getNumCanciones() const {
+    return this->numeroCanciones;
+}
+int PlayList::getDuracion() const {
+    return this->totalDuracion;
+}
 

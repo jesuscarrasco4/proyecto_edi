@@ -11,6 +11,10 @@
 #include <iostream>
 #include <string> // Importante para usar string
 #include "Fecha.h"
+#include "ListaDPI.h"  // Necesario para las listas
+#include "Artista.h"
+#include "PlayList.h"
+
 using namespace std;
 
 // 1. Definimos la constante primero
@@ -24,6 +28,9 @@ private:
 	string email;
 	string contrasena;
 	Fecha *fechaNac;
+
+	ListaDPI<PlayList*> *lPlayLists;
+	ListaDPI<Artista*> *lArtistasFavoritos;
 
 public:
 	string getIdUsuario() const;
@@ -43,6 +50,20 @@ public:
 	void mostrar() const;
 
 	~Usuario();
+
+	// --- MÉTODOS A IMPLEMENTAR/MODIFICAR ---
+	void crearPlayList(string nombre); // [cite: 74]
+	void anadirCancionAPlayList(string nombrePL, Cancion *c); // [cite: 76]
+	void reproducirPlayLists(); // Reproduce todas [cite: 77]
+
+	// Para compartir música
+	PlayList* compartirPlayList(string nombrePL); // Devuelve copia [cite: 78, 79]
+	void anadirPlayListCompartida(PlayList *pl); // Inserta la copia [cite: 80]
+
+	// Gestión de favoritos
+	void insertarArtistaFavorito(Artista *a); // [cite: 81]
+	void eliminarArtistaFavorito(string nombreA); // [cite: 83]
+	void mostrarFavoritos() const; // [cite: 84]
 
 	string pasarACadena() const;
 };

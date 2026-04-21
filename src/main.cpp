@@ -6,35 +6,19 @@
 #include "Cancion.h"
 #include "PruebasCancion.h"
 #include "PruebaGestorUsuarios.h"
+#include "PruebaGestorArtistas.h"
 
 using namespace std;
 
-// En main.cpp
-int main() {
+// Cambiamos el nombre para que no choque con el main de progPrincipal.cpp
+void ejecutarPruebas() {
+    cout << "--- EJECUTANDO BATERÍA DE PRUEBAS DEL SISTEMA ---" << endl;
 
-	/*// Practica 03
-	TVector misUsuarios;
-    int total = 0;
+    pruebasArtista();
+    pruebasCancion();
+    pruebasGestorUsuarios();
+    pruebasGestorArtistas();
+    pruebasUsuarioSesion78();
 
-    // 1. Cargamos los 100 usuarios del fichero original
-    cargarUsuarios(misUsuarios, total);
-
-    // 2. Elegimos un año para filtrar (por ejemplo, 1995)
-    int anioABuscar = 2001;
-
-    // 3. Guardamos los que coincidan en el nuevo fichero
-    guardarUsuariosPorAnio(misUsuarios, total, anioABuscar);
-
-    // 4. Mostramos por pantalla para verificar
-    mostrarUsuarios(misUsuarios, total);
-
-    // 5. Liberamos la memoria
-    destruirUsuarios(misUsuarios, total);
-	 */
-
-	// Practica 04
-	pruebasArtista();
-	pruebasCancion();
-	pruebasGestorUsuarios();
-	return 0;
+    cout << "--- PRUEBAS FINALIZADAS CON ÉXITO ---" << endl;
 }

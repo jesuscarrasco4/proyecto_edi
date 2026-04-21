@@ -22,9 +22,11 @@ private:
     ListaDPI<Cancion*> *lCanciones;
 
 public:
+
     string getNombre() const;
     string getPais() const;
     int getNumeroSeguidores() const;
+    int numCanciones() const;
 
     Artista();
     Artista(string nombre, string pais, int numeroSeguidores);

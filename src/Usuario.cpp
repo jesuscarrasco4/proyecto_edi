@@ -13,6 +13,8 @@ Usuario::Usuario() {
     email = "";
     contrasena = "";
     fechaNac = new Fecha(); // Reserva dinámica obligatoria
+    lPlayLists = new ListaDPI<PlayList*>();
+    lArtistasFavoritos = new ListaDPI<Artista*>();
 }
 
 // Constructor parametrizado (Actualizado para Sesión 3)
@@ -23,9 +25,12 @@ Usuario::Usuario(string id, string nombre, string email, string contrasena, int 
     this->contrasena = contrasena;
     // Reserva de memoria para el objeto Fecha
     this->fechaNac = new Fecha(dia, mes, anio);
+    //Reservamos memoria para las nuevas listas
+    lPlayLists = new ListaDPI<PlayList*>();
+    lArtistasFavoritos = new ListaDPI<Artista*>();
 }
 
-// Constructor de copia: Copia profunda
+// Constructor de copia
 Usuario::Usuario(const Usuario &otroUsuario) {
     idUsuario = otroUsuario.idUsuario;
     apellidosNombre = otroUsuario.apellidosNombre;
@@ -33,10 +38,28 @@ Usuario::Usuario(const Usuario &otroUsuario) {
     contrasena = otroUsuario.contrasena;
 
     if (otroUsuario.fechaNac != nullptr) {
-        // Creamos una nueva instancia de Fecha basada en la original
         this->fechaNac = new Fecha(*(otroUsuario.fechaNac));
     } else {
         this->fechaNac = nullptr;
+    }
+
+    // 1. Copia de PlayLists (Composición -> Copia profunda)
+    this->lPlayLists = new ListaDPI<PlayList*>();
+    otroUsuario.lPlayLists->moverPrimero();
+    while (!otroUsuario.lPlayLists->alFinal()) {
+        // Usamos el constructor de copia de PlayList
+        PlayList *copiaPL = new PlayList(*(otroUsuario.lPlayLists->consultar()));
+        lPlayLists->insertar(copiaPL);
+        otroUsuario.lPlayLists->avanzar();
+    }
+
+    // 2. Copia de Favoritos (Agregación -> Copia de punteros)
+    this->lArtistasFavoritos = new ListaDPI<Artista*>();
+    otroUsuario.lArtistasFavoritos->moverPrimero();
+    while (!otroUsuario.lArtistasFavoritos->alFinal()) {
+        // Solo copiamos el puntero, no creamos un nuevo Artista
+        lArtistasFavoritos->insertar(otroUsuario.lArtistasFavoritos->consultar());
+        otroUsuario.lArtistasFavoritos->avanzar();
     }
 }
 
@@ -73,9 +96,145 @@ string Usuario::pasarACadena() const {
 // Destructor: Libera la memoria de la fecha
 Usuario::~Usuario() {
     delete fechaNac;
+
+    // 1. Borrar PlayLists (Composición: somos dueños)
+    lPlayLists->moverPrimero();
+    while (!lPlayLists->estaVacia()) {
+        delete lPlayLists->consultar();
+        lPlayLists->eliminar();
+    }
+    delete lPlayLists;
+
+    // 2. Borrar Favoritos (Agregación: NO somos dueños de los artistas)
+    delete lArtistasFavoritos;
 }
 
-// --- Gestión de Ficheros ---
+// Crear PlayList
+void Usuario::crearPlayList(string nombre){
+	bool existe = false;
+	lPlayLists->moverPrimero();
+
+	while(!lPlayLists->alFinal() && !existe){
+		if (lPlayLists->consultar()->getNombre() == nombre) {
+			existe = true;
+		}else{
+			lPlayLists->avanzar();
+		}
+
+		if(!existe){
+			PlayList *nueva = new PlayList(nombre);
+			lPlayLists->insertar(nueva);
+		}
+	}
+}
+
+// Añadir Cancion a Playlist
+void Usuario::anadirCancionAPlayList(string nombrePL, Cancion *c) {
+    bool encontrada = false;
+    lPlayLists->moverPrimero();
+
+    while (!lPlayLists->alFinal() && !encontrada) {
+        if (lPlayLists->consultar()->getNombre() == nombrePL) {
+            encontrada = true;
+            lPlayLists->consultar()->agregarCancion(c);
+        } else {
+            lPlayLists->avanzar();
+        }
+    }
+}
+
+// Reproducir PlayList
+void Usuario::reproducirPlayLists() {
+    cout << "Reproduciendo todas las PlayLists de: " << apellidosNombre << endl;
+
+    if (lPlayLists->estaVacia()) {
+        cout << "  (No hay PlayLists para reproducir)" << endl;
+    } else {
+        lPlayLists->moverPrimero();
+        while (!lPlayLists->alFinal()) {
+            // Cada PlayList se encarga de su propia reproduccion
+            lPlayLists->consultar()->reproducirTodo();
+            lPlayLists->avanzar();
+        }
+    }
+}
+
+// Compartir PlayList
+PlayList* Usuario::compartirPlayList(string nombrePL) {
+    PlayList *copia = nullptr;
+    bool encontrada = false;
+    lPlayLists->moverPrimero();
+
+    while (!lPlayLists->alFinal() && !encontrada) {
+        if (lPlayLists->consultar()->getNombre() == nombrePL) {
+            encontrada = true;
+            // Usamos el constructor de copia de PlayList para no compartir punteros [cite: 79, 138, 139]
+            copia = new PlayList(*(lPlayLists->consultar()));
+        } else {
+            lPlayLists->avanzar();
+        }
+    }
+    return copia;
+}
+
+// Añadir PlayList compartida
+void Usuario::anadirPlayListCompartida(PlayList *pl) {
+    if (pl != nullptr) {
+        lPlayLists->insertar(pl);
+    }
+}
+
+// Mostrar favoritos
+void Usuario::mostrarFavoritos() const {
+    cout << "Favoritos de " << apellidosNombre << ":" << endl;
+    if (lArtistasFavoritos->estaVacia()) {
+        cout << "  (Lista vacia)" << endl;
+    } else {
+        lArtistasFavoritos->moverPrimero();
+        while (!lArtistasFavoritos->alFinal()) {
+            cout << "  - " << lArtistasFavoritos->consultar()->getNombre() << endl;
+            lArtistasFavoritos->avanzar();
+        }
+    }
+}
+
+// Eliminar Artista Favorito
+void Usuario::eliminarArtistaFavorito(string nombreA) {
+    bool encontrado = false;
+    lArtistasFavoritos->moverPrimero();
+
+    while (!lArtistasFavoritos->alFinal() && !encontrado) {
+        if (lArtistasFavoritos->consultar()->getNombre() == nombreA) {
+            encontrado = true;
+            // Solo eliminamos el nodo de la lista (el puntero)
+            lArtistasFavoritos->eliminar();
+        } else {
+            lArtistasFavoritos->avanzar();
+        }
+    }
+}
+
+//Insertar Artista Favorito
+void Usuario::insertarArtistaFavorito(Artista * a){
+	if(a !=nullptr){
+		bool existe = false;
+		lArtistasFavoritos->moverPrimero();
+		while(!lArtistasFavoritos->alFinal() && !existe){
+			if(lArtistasFavoritos->consultar()->getNombre() == a->getNombre()){
+				existe = true;
+			}else{
+				lArtistasFavoritos->avanzar();
+			}
+		}
+		if(!existe){
+			lArtistasFavoritos->insertar(a);
+		}
+	}
+}
+
+
+
+// Funciones Globales //
 
 void cargarUsuarios(Usuario* usuariosArchivo[], int &numUsuarios) {
     numUsuarios = 0;
@@ -157,3 +316,5 @@ void guardarUsuariosPorAnio(TVector usuarios, int numUsuarios, int anioFiltro) {
         cerr << "Error al crear el fichero de salida." << endl;
     }
 }
+
+// --- --- --- --- --- --- --- --- --- --- --- --- //

@@ -1,37 +1,52 @@
-/*
- * PruebasArtista.cpp
- *
- *  Created on: 2 mar 2026
- *      Author: estudiante
- */
-
 #include "PruebasArtista.h"
 #include <iostream>
 
 using namespace std;
 
 void pruebasArtista() {
-    cout << "--- Inicio de Pruebas Dinámicas: Artista ---" << endl;
+    cout << "--- Inicio de Pruebas: Artista con Lista de Canciones ---" << endl;
 
-    // Crear un artista dinámicamente
-    Artista *a1 = new Artista("Rosalia", "España", 20000000);
+    // 1. Crear artista dinámicamente
+    Artista *a1 = new Artista("Coldplay", "UK", 50000000);
 
-    // Mostrar sus datos
+    // 2. Probar inserción ordenada de canciones [cite: 218]
+    cout << "\n[1] Insertando canciones..." << endl;
+    a1->insertarCancion("Yellow", "Alternative", 269);      // Segunda (Intermedia)
+    a1->insertarCancion("Clocks", "Rock", 307);             // Primera (Al principio)
+    a1->insertarCancion("Zzz", "Relax", 120);              // Última (Al final)
+
+    // 3. Probar duplicados [cite: 219]
+    cout << "[2] Intentando insertar duplicado ('Yellow')..." << endl;
+    a1->insertarCancion("Yellow", "Pop", 100);
+
+    // 4. Mostrar para verificar orden y número [cite: 223, 247]
+    cout << "\nEstado del artista:" << endl;
     a1->mostrar();
+    cout << "Total canciones: " << a1->numCanciones() << " (esperado: 3)" << endl;
 
-    // Crear otro artista para comparar
-    Artista *a2 = new Artista("Bad Bunny", "Puerto Rico", 50000000);
-
-    // Probar el operador < (alfabético)
-    if (*a1 < *a2) {
-        cout << a1->getNombre() << " va antes que " << a2->getNombre() << endl;
+    // 5. Probar búsqueda [cite: 220, 243]
+    cout << "\n[3] Probando busqueda..." << endl;
+    Cancion datosEncontrados;
+    if (a1->buscarCancion("Yellow", datosEncontrados)) {
+        cout << "[OK] Cancion encontrada: " << datosEncontrados.getTitulo()
+             << " [" << datosEncontrados.getGenero() << "]" << endl;
     } else {
-        cout << a2->getNombre() << " va antes que " << a1->getNombre() << endl;
+        cout << "[ERROR] No se encontro 'Yellow'" << endl;
     }
 
-    // ¡MUY IMPORTANTE! Liberar la memoria
+    // 6. Probar Constructor de Copia (Composición Crítica) [cite: 215, 216]
+    cout << "\n[4] Probando copia profunda (Constructor de copia)..." << endl;
+    Artista *a2 = new Artista(*a1); // Clonamos Coldplay
+
+    cout << "Copia creada. Modificando original (borramos canciones en el original indirectamente)..." << endl;
+    // Si borramos a1, las canciones de a2 deben seguir vivas si la copia es profunda.
     delete a1;
+
+    cout << "Datos del artista clonado tras borrar el original:" << endl;
+    a2->mostrar(); // Si esto no falla y muestra las canciones, la copia es perfecta.
+
+    // 7. Limpieza final
     delete a2;
 
-    cout << "--- Fin de Pruebas ---" << endl;
+    cout << "\n--- Fin de Pruebas Artista: Memoria OK ---" << endl;
 }

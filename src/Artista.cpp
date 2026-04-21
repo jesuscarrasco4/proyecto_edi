@@ -14,10 +14,12 @@
 using namespace std;
 
 // Constructor por defecto
+// Constructor por defecto
 Artista::Artista() {
     nombre = "";
     pais = "";
     numeroSeguidores = 0;
+    this->lCanciones = new ListaDPI<Cancion*>();
 }
 
 // Constructor parametrizado
@@ -25,6 +27,7 @@ Artista::Artista(string nombre, string pais, int numeroSeguidores) {
     this->nombre = nombre;
     this->pais = pais;
     this->numeroSeguidores = numeroSeguidores;
+    this->lCanciones = new ListaDPI<Cancion*>();
 }
 
 // Constructor de copia
@@ -70,6 +73,19 @@ void Artista::mostrar() const {
     cout << "Nombre: " << this->nombre << endl;
     cout << "Pais: " << this->pais << endl;
     cout << "Numero de Seguidores: " << this->numeroSeguidores << endl;
+
+    // Añadimos el recorrido de la lista
+    cout << "Canciones:" << endl;
+    if (lCanciones->estaVacia()) {
+        cout << "  (No hay canciones registradas)" << endl;
+    } else {
+        lCanciones->moverPrimero();
+        while (!lCanciones->alFinal()) {
+            cout << "  - ";
+            lCanciones->consultar()->mostrar(); // Llama al mostrar de Cancion
+            lCanciones->avanzar();
+        }
+    }
 }
 
 // - Sobrecargar con el operador '==' - //
@@ -122,4 +138,15 @@ bool Artista::buscarCancion(string titulo, Cancion &c) {
     return encontrada;
 }
 
+int Artista::numCanciones() const {
+    int contador = 0;
+    if (lCanciones != nullptr) {
+        lCanciones->moverPrimero(); // [cite: 120]
+        while (!lCanciones->alFinal()) { // [cite: 129]
+            contador++;
+            lCanciones->avanzar(); // [cite: 116]
+        }
+    }
+    return contador;
+}
 

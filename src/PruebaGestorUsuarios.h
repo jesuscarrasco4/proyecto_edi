@@ -14,5 +14,7 @@
  * 7. Verificación de la copia profunda (Constructor de copia). [cite: 160]
  */
 void pruebasGestorUsuarios();
+void pruebasUsuarioSesion78();
+void pruebasGestorUsuariosABB();
 
 #endif
