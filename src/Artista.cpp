@@ -14,7 +14,6 @@
 using namespace std;
 
 // Constructor por defecto
-// Constructor por defecto
 Artista::Artista() {
     nombre = "";
     pais = "";
@@ -39,7 +38,6 @@ Artista::Artista(const Artista &otro) {
 
     otro.lCanciones->moverPrimero();
     while (!otro.lCanciones->alFinal()) {
-        // Clonamos cada canción del artista original
         Cancion *copiaC = new Cancion(*(otro.lCanciones->consultar()));
         this->lCanciones->insertar(copiaC);
         otro.lCanciones->avanzar();
@@ -68,13 +66,12 @@ string Artista::getPais() const { return this->pais; }
 int Artista::getNumeroSeguidores() const { return this->numeroSeguidores; }
 
 
-// - Mostrar - //
+// Mostrar
 void Artista::mostrar() const {
     cout << "Nombre: " << this->nombre << endl;
     cout << "Pais: " << this->pais << endl;
     cout << "Numero de Seguidores: " << this->numeroSeguidores << endl;
 
-    // Añadimos el recorrido de la lista
     cout << "Canciones:" << endl;
     if (lCanciones->estaVacia()) {
         cout << "  (No hay canciones registradas)" << endl;
@@ -88,21 +85,20 @@ void Artista::mostrar() const {
     }
 }
 
-// - Sobrecargar con el operador '==' - //
+// Sobrecargar con el operador '=='
 bool Artista::operator==(const Artista &otro) const {
 	return this->nombre == otro.nombre;
 }
 
-// - Sobrecarga con el operador '<' - //
+// Sobrecarga con el operador '<'
 bool Artista::operator<(const Artista &otro) const {
 	return this->nombre < otro.nombre;
 }
 
+// Insertar Cancion
 void Artista::insertarCancion(string titulo, string genero, int duracion) {
     lCanciones->moverPrimero();
     bool encontrado = false;
-
-    // Buscar posición u homónimo
     while (!lCanciones->alFinal() && !encontrado) {
         if (lCanciones->consultar()->getTitulo() >= titulo) {
             encontrado = true;
@@ -111,33 +107,32 @@ void Artista::insertarCancion(string titulo, string genero, int duracion) {
         }
     }
 
-    // Si no es duplicado, insertamos [cite: 219]
     if (!encontrado || lCanciones->consultar()->getTitulo() != titulo) {
         Cancion *nueva = new Cancion(titulo, genero, duracion);
         lCanciones->insertar(nueva);
     }
 }
 
+// Buscar Cancion
 bool Artista::buscarCancion(string titulo, Cancion &c) {
     bool encontrada = false;
-    lCanciones->moverPrimero(); // Siempre empezamos desde el principio de la lista
+    lCanciones->moverPrimero();
 
-    // Recorremos la lista con el Punto de Interés (DPI)
     while (!lCanciones->alFinal() && !encontrada) {
-        // Consultamos la canción actual
         Cancion *aux = lCanciones->consultar();
 
         if (aux->getTitulo() == titulo) {
             encontrada = true;
-            c = *aux; // Copiamos los datos del objeto encontrado en el parámetro de salida
+            c = *aux;
         } else {
-            lCanciones->avanzar(); // Movemos el DPI al siguiente nodo
+            lCanciones->avanzar();
         }
     }
 
     return encontrada;
 }
 
+// Buscar Cancion con puntero
 Cancion* Artista::buscarCancionPtr(const string &titulo) const {
     Cancion *encontrada = nullptr;
     lCanciones->moverPrimero();
@@ -152,23 +147,26 @@ Cancion* Artista::buscarCancionPtr(const string &titulo) const {
     return encontrada;
 }
 
+// Incremetar Seguidores
 void Artista::incrementarSeguidores() {
     numeroSeguidores++;
 }
 
+// Eliminar Seguidores
 void Artista::decrementarSeguidores() {
     if (numeroSeguidores > 0) {
         numeroSeguidores--;
     }
 }
 
+// Numero de canciones
 int Artista::numCanciones() const {
     int contador = 0;
     if (lCanciones != nullptr) {
-        lCanciones->moverPrimero(); // [cite: 120]
-        while (!lCanciones->alFinal()) { // [cite: 129]
+        lCanciones->moverPrimero();
+        while (!lCanciones->alFinal()) {
             contador++;
-            lCanciones->avanzar(); // [cite: 116]
+            lCanciones->avanzar();
         }
     }
     return contador;

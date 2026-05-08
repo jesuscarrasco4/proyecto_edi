@@ -1,17 +1,13 @@
-/*
- * GestorUsuarios.cpp
- *
- *  Created on: 13 mar 2026
- *      Author: estudiante
- */
-
 #include "GestorUsuarios.h"
 
 #if defined(LISTA_USUARIOS)
+
+	// Constructor por defecto
 	GestorUsuarios::GestorUsuarios() {
-		lUsuarios = new ListaDPI<Usuario *>(); // Crea lista vacía
+		lUsuarios = new ListaDPI<Usuario *>();
 	}
 
+	// Constructor por copia
 	GestorUsuarios::GestorUsuarios(const GestorUsuarios &otroGestorUsuarios) {
 		lUsuarios = new ListaDPI<Usuario *>();
 		otroGestorUsuarios.lUsuarios->moverPrimero();
@@ -23,19 +19,20 @@
 		}
 	}
 
+	// Destructor
 	GestorUsuarios::~GestorUsuarios() {
 		if (lUsuarios != nullptr) {
 			lUsuarios->moverPrimero();
 			while (!lUsuarios->alFinal()) {
 				Usuario *aux = lUsuarios->consultar();
-				delete aux;              // Borramos el objeto Usuario (Composición)
-				lUsuarios->eliminar();   // Borramos el nodo de la lista
+				delete aux;
+				lUsuarios->eliminar();
 			}
-			delete lUsuarios;            // Borramos la estructura de la lista
+			delete lUsuarios;
 		}
 	}
 
-	// Metodo Insertar
+	// Insertar
 	void GestorUsuarios::insertar(string id, string nombre, string email, string pass, int d, int m, int a){
 		bool encontrado = false;
 		lUsuarios->moverPrimero();
@@ -57,21 +54,20 @@
 		lUsuarios->insertar(nuevo);
 	}
 
-	// Metodo Mostrar
+	// Mostrar
 	void GestorUsuarios::mostrar() const {
 		if (lUsuarios->estaVacia()) {
 			cout << "No hay usuarios registrados en el sistema." << endl;
 		} else {
 			lUsuarios->moverPrimero();
 			while (!lUsuarios->alFinal()) {
-				// Consultamos el puntero y llamamos a su método mostrar [cite: 131]
 				lUsuarios->consultar()->mostrar();
 				lUsuarios->avanzar();
 			}
 		}
 	}
 
-	// Metodo numElementos
+	// Número de elementos
 	int GestorUsuarios::numElementos() const {
 		int contador = 0;
 		lUsuarios->moverPrimero();
@@ -82,19 +78,18 @@
 		return contador;
 	}
 
-	//Metodo Buscar
+	// Buscar
 	Usuario* GestorUsuarios::buscar(string apellidosNombre) {
 		Usuario *encontrado = nullptr;
-		lUsuarios->moverPrimero(); // Empezamos desde el inicio [cite: 120]
+		lUsuarios->moverPrimero();
 
-		// Recorremos mientras no estemos al final y no hayamos encontrado nada [cite: 129]
 		while (!lUsuarios->alFinal() && encontrado == nullptr) {
-			Usuario *aux = lUsuarios->consultar(); // Miramos el usuario actual [cite: 131]
+			Usuario *aux = lUsuarios->consultar();
 
 			if (aux->getApellidosNombre() == apellidosNombre) {
-				encontrado = aux; // ¡Lo tenemos!
+				encontrado = aux;
 			} else {
-				lUsuarios->avanzar(); // Seguimos buscando [cite: 116]
+				lUsuarios->avanzar();
 			}
 		}
 
@@ -103,21 +98,24 @@
 
 #else
 
+	// Constructor por defecto
 	GestorUsuarios::GestorUsuarios() {
 		aUsuarios = new BSTree<KeyValue<string, Usuario*>>();
 	}
 
+	// Constructor por copia
 	GestorUsuarios::GestorUsuarios(const GestorUsuarios &otroGestorUsuarios) {
         aUsuarios = new BSTree<KeyValue<string, Usuario*>>();
         copiarArbol(otroGestorUsuarios.aUsuarios);
 	}
 
+	// Destructor
 	GestorUsuarios::~GestorUsuarios() {
         liberarUsuarios(aUsuarios);
 		delete aUsuarios;
 	}
 
-	// Metodo Insertar
+	// Insertar
 	void GestorUsuarios::insertar(string id, string nombre, string email, string pass, int d, int m, int a){
         if (buscar(nombre) != nullptr) {
             return;
@@ -128,76 +126,67 @@
 		aUsuarios->insertar(par);
 	}
 
-	// Metodo Mostrar
+	// Mostrar
 	void GestorUsuarios::mostrar() const {
 	    cout << "--- Listado de Usuarios (Orden Alfabético) ---" << endl;
 
 	    if (aUsuarios->estaVacio()) {
 	        cout << "El gestor está vacío." << endl;
 	    } else {
-	        // 1. Llamada al método recursivo para mostrar los datos
 	        mostrarRecursivo(aUsuarios);
-
-	        // 2. Información estadística requerida por el PDF
 	        cout << "\nTotal de usuarios: " << numElementos() << endl;
             cout << "Niveles del arbol: " << calcularAltura(aUsuarios) << endl;
 	    }
 	}
 
-	// Método privado auxiliar para el recorrido Inorden
+	// Mostrar recursivo
 	void GestorUsuarios::mostrarRecursivo(BSTree<KeyValue<string, Usuario*>> *arbol) const {
 	    if (!arbol->estaVacio()) {
-	        // 1. Visitar subárbol izquierdo (menores)
 	        mostrarRecursivo(arbol->getIzq());
-
-	        // 2. Procesar raíz (dato actual)
-	        // Obtenemos el par [clave-valor] y mostramos el Usuario
 	        arbol->getDato().getValue()->mostrar();
-
-	        // 3. Visitar subárbol derecho (mayores)
 	        mostrarRecursivo(arbol->getDer());
 	    }
 	}
 
-	//Metodo Buscar
+	// Buscar
     Usuario* GestorUsuarios::buscar(string apellidosNombre) {
         KeyValue<string, Usuario*> buscado(apellidosNombre);
         return buscarRecursivo(aUsuarios, buscado);
     }
 
-	//Metodo Buscar recursivo
+	// Buscar recursivo
 	Usuario* GestorUsuarios::buscarRecursivo(BSTree<KeyValue<string, Usuario*>> *arbol, const KeyValue<string, Usuario*> &buscado) {
 	    if (arbol->estaVacio()) {
 	        return nullptr;
 	    }
 
-	    // Obtenemos el par KeyValue de la raíz actual
 	    KeyValue<string, Usuario*> actual = arbol->getDato();
 
 	    if (actual == buscado) {
-	        return actual.getValue(); // ¡Encontrado! Devolvemos el puntero al Usuario [cite: 77, 120]
+	        return actual.getValue();
 	    }
 	    else if (buscado < actual) {
-	        return buscarRecursivo(arbol->getIzq(), buscado); // Buscar en el subárbol izquierdo [cite: 84]
+	        return buscarRecursivo(arbol->getIzq(), buscado);
 	    }
 	    else {
-	        return buscarRecursivo(arbol->getDer(), buscado); // Buscar en el subárbol derecho [cite: 84]
+	        return buscarRecursivo(arbol->getDer(), buscado);
 	    }
 	}
 
+	// Número de elementos
 	int GestorUsuarios::numElementos() const {
-	    return contarNodos(aUsuarios); // Llama al método privado que cuenta nodos
+	    return contarNodos(aUsuarios);
 	}
 
-	// Auxiliar privado
+	// Contar nodos
 	int GestorUsuarios::contarNodos(BSTree<KeyValue<string, Usuario*>> *arbol) const {
 	    if (arbol->estaVacio()) {
 	        return 0;
 	    }
-	    // Suma 1 (raíz) + hijos izquierda + hijos derecha [cite: 5, 9]
 	    return 1 + contarNodos(arbol->getIzq()) + contarNodos(arbol->getDer());
 	}
 
+	// Calcular altura
     int GestorUsuarios::calcularAltura(BSTree<KeyValue<string, Usuario*>> *arbol) const {
         if (arbol->estaVacio()) {
             return 0;
@@ -207,6 +196,7 @@
         return 1 + (altIzq > altDer ? altIzq : altDer);
     }
 
+	// Copiar árbol
     void GestorUsuarios::copiarArbol(BSTree<KeyValue<string, Usuario*>> *arbol) {
         if (arbol == nullptr || arbol->estaVacio()) {
             return;
@@ -218,6 +208,7 @@
         copiarArbol(arbol->getDer());
     }
 
+	// Liberar usuarios
     void GestorUsuarios::liberarUsuarios(BSTree<KeyValue<string, Usuario*>> *arbol) {
         if (arbol == nullptr || arbol->estaVacio()) {
             return;
@@ -228,12 +219,3 @@
     }
 
 #endif
-
-
-
-
-
-
-
-
-

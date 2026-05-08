@@ -1,44 +1,36 @@
-/*
- * PlayList.cpp
- *
- *  Created on: 8 mar 2026
- *      Author: estudiante
- */
-
 #include "PlayList.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 
-// Constructor por Defecto
+// Constructor por defecto
 PlayList::PlayList() {
     this->nombre = "";
     this->numeroCanciones = 0;
     this->totalDuracion = 0;
-    this->colaReproduccion = new Cola<Cancion*>();     //Inicializamos la Cola
+    this->colaReproduccion = new Cola<Cancion*>();
 }
 
-// Constructor Parametrizado
+// Constructor parametrizado
 PlayList::PlayList(string nombre){
     this->nombre = nombre;
     this->numeroCanciones = 0;
     this->totalDuracion = 0;
-    this->colaReproduccion = new Cola<Cancion*>();    //Inicializamos la Cola
+    this->colaReproduccion = new Cola<Cancion*>();
 }
 
-// Constructor por Copia
+// Constructor por copia
 PlayList::PlayList(const PlayList &otraPlayList){
 	this->nombre = otraPlayList.nombre;
 	this->numeroCanciones = otraPlayList.numeroCanciones;
 	this->totalDuracion = otraPlayList.totalDuracion;
-	this->colaReproduccion = new Cola<Cancion*>();    //Inicializamos la Cola
+	this->colaReproduccion = new Cola<Cancion*>();
 
 	Cola<Cancion*> aux;
 	Cancion* c;
 	Cola<Cancion*> *origen = const_cast<Cola<Cancion*> *>(otraPlayList.colaReproduccion);
 
-	// Recorremos la cola origen restaurandola al final para mantener su estado.
 	while (!origen->estaVacia()) {
         c = origen->getPrimero();
 	    this->colaReproduccion->encolar(c);
@@ -56,26 +48,27 @@ PlayList::~PlayList() {
 	delete colaReproduccion;
 }
 
-// Agregar Cancion
+// Agregar canción
 void PlayList::agregarCancion(Cancion *c){
 	if (c != nullptr){
 		colaReproduccion->encolar(c);
-		numeroCanciones++;	// Sumamos 1 unidad por la cancion añadida
-		totalDuracion += c->getDuracion();	// Acumulamos la duracion de la cancion
+		numeroCanciones++;
+		totalDuracion += c->getDuracion();
 	}
 }
 
-// Eliminar Cancion
+// Eliminar canción
 void PlayList::eliminarCancion() {
     if (!colaReproduccion->estaVacia()) {
         Cancion* primero = colaReproduccion->getPrimero();
-        totalDuracion -= primero->getDuracion(); // Restamos duración
+        totalDuracion -= primero->getDuracion();
         numeroCanciones--;
 
         colaReproduccion->desencolar();
     }
 }
 
+// Reproducir todo
 void PlayList::reproducirTodo() {
     if (colaReproduccion->estaVacia()) {
         cout << "La PlayList " << nombre << " esta vacia." << endl;
@@ -95,6 +88,7 @@ void PlayList::reproducirTodo() {
     }
 }
 
+// Reproducir a partir
 void PlayList::reproducirAPartir(int posicion) {
     if (colaReproduccion->estaVacia()) {
         cout << "La PlayList " << nombre << " esta vacia." << endl;
@@ -108,7 +102,6 @@ void PlayList::reproducirAPartir(int posicion) {
     Cola<Cancion*> aux;
     int indice = 1;
 
-    // Rotamos la cola hasta situar en primer lugar la posicion deseada.
     while (!colaReproduccion->estaVacia()) {
         Cancion *actual = colaReproduccion->getPrimero();
         colaReproduccion->desencolar();
@@ -128,24 +121,27 @@ void PlayList::reproducirAPartir(int posicion) {
     reproducirTodo();
 }
 
+// Setter
 void PlayList::setNombre(string nombre) {
     this->nombre = nombre;
 }
 
+// Mostrar
 void PlayList::mostrar() const {
     cout << "PlayList: " << nombre << endl;
     cout << "Numero de canciones: " << numeroCanciones << endl;
     cout << "Duracion total: " << totalDuracion << " segundos" << endl;
 }
 
-//Getters
+// Getter
 string PlayList::getNombre() const {
 	return nombre;
 }
+
 int PlayList::getNumCanciones() const {
     return this->numeroCanciones;
 }
+
 int PlayList::getDuracion() const {
     return this->totalDuracion;
 }
-

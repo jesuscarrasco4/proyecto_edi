@@ -1,15 +1,8 @@
-/*
- * PlayList.h
- *
- *  Created on: 8 mar 2026
- *      Author: estudiante
- */
-
 #ifndef PLAYLIST_H_
 #define PLAYLIST_H_
 
 #include <iostream>
-#include <string> // Importante para usar string
+#include <string>
 using namespace std;
 #include "Cola.h"
 #include "Cancion.h"
@@ -22,38 +15,24 @@ private:
 	Cola <Cancion *> *colaReproduccion;
 
 public:
-	// PRE: ---
-	// DESC: Construye una playlist vacia.
-	// COMPLEJIDAD: O(1)
 	PlayList();
-	// PRE: nombre puede ser cualquier cadena.
-	// DESC: Construye una playlist vacia con el nombre indicado.
-	// COMPLEJIDAD: O(1)
 	PlayList(string nombre);
-	// PRE: ---
-	// DESC: Crea una copia de la cola de canciones (agregacion: copia punteros, no canciones).
-	// COMPLEJIDAD: O(n), siendo n el numero de canciones.
 	PlayList(const PlayList &otraPlayList);
 	virtual ~PlayList();
 
-   // --  GETTERS / SETTERS  -- //
+	// Getter
 	string getNombre() const;
-	void setNombre(string nombre);
 	int getNumCanciones() const;
-    int getDuracion() const;
+	int getDuracion() const;
 
-    // --  METODOS DE COLA  -- //
-    void agregarCancion(Cancion *c);
-    void eliminarCancion();
+	// Setter
+	void setNombre(string nombre);
 
-    // --  MOSTRAR  -- //
-    void mostrar() const;
-    void reproducirTodo();
-    // PRE: posicion > 0
-    // DESC: Reproduce de forma circular a partir de la posicion indicada sin perder datos.
-    // COMPLEJIDAD: O(n), siendo n el numero de canciones.
-    void reproducirAPartir(int posicion);
-
+	void agregarCancion(Cancion *c);
+	void eliminarCancion();
+	void mostrar() const;
+	void reproducirTodo();
+	void reproducirAPartir(int posicion);
 };
 
 #endif /* PLAYLIST_H_ */

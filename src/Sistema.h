@@ -12,7 +12,7 @@ class Sistema {
 private:
     string nombreSistema;
     GestorUsuarios *usuarios;
-    GestorArtistas *artistas; // [CORREGIDO] Añadida la 's' para coincidir con la clase
+    GestorArtistas *artistas;
 
     void cargarUsuarios();
     void cargarArtistas();

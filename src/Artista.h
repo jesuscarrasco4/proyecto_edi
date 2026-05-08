@@ -40,7 +40,6 @@ public:
 
     virtual ~Artista();
 
-    // Sobrecarga de operadores
     bool operator==(const Artista &otro) const; // Por nombre
     bool operator<(const Artista &otro) const;  // Orden alfabético
 

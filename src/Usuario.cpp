@@ -12,25 +12,23 @@ Usuario::Usuario() {
     apellidosNombre = "";
     email = "";
     contrasena = "";
-    fechaNac = new Fecha(); // Reserva dinámica obligatoria
+    fechaNac = new Fecha();
     lPlayLists = new ListaDPI<PlayList*>();
     lArtistasFavoritos = new ListaDPI<Artista*>();
 }
 
-// Constructor parametrizado (Actualizado para Sesión 3)
+// Constructor parametrizado
 Usuario::Usuario(string id, string nombre, string email, string contrasena, int dia, int mes, int anio) {
     this->idUsuario = id;
     this->apellidosNombre = nombre;
     this->email = email;
     this->contrasena = contrasena;
-    // Reserva de memoria para el objeto Fecha
     this->fechaNac = new Fecha(dia, mes, anio);
-    //Reservamos memoria para las nuevas listas
     lPlayLists = new ListaDPI<PlayList*>();
     lArtistasFavoritos = new ListaDPI<Artista*>();
 }
 
-// Constructor de copia
+// Constructor por copia
 Usuario::Usuario(const Usuario &otroUsuario) {
     idUsuario = otroUsuario.idUsuario;
     apellidosNombre = otroUsuario.apellidosNombre;
@@ -43,40 +41,50 @@ Usuario::Usuario(const Usuario &otroUsuario) {
         this->fechaNac = nullptr;
     }
 
-    // 1. Copia de PlayLists (Composición -> Copia profunda)
     this->lPlayLists = new ListaDPI<PlayList*>();
     otroUsuario.lPlayLists->moverPrimero();
     while (!otroUsuario.lPlayLists->alFinal()) {
-        // Usamos el constructor de copia de PlayList
         PlayList *copiaPL = new PlayList(*(otroUsuario.lPlayLists->consultar()));
         lPlayLists->insertar(copiaPL);
         otroUsuario.lPlayLists->avanzar();
     }
 
-    // 2. Copia de Favoritos (Agregación -> Copia de punteros)
     this->lArtistasFavoritos = new ListaDPI<Artista*>();
     otroUsuario.lArtistasFavoritos->moverPrimero();
     while (!otroUsuario.lArtistasFavoritos->alFinal()) {
-        // Solo copiamos el puntero, no creamos un nuevo Artista
         lArtistasFavoritos->insertar(otroUsuario.lArtistasFavoritos->consultar());
         otroUsuario.lArtistasFavoritos->avanzar();
     }
 }
 
-// Setters
+// Setter
 void Usuario::setIdUsuario(string idUsuario) { this->idUsuario = idUsuario; }
+
+// Setter
 void Usuario::setApellidosNombre(string apellidosNombre) { this->apellidosNombre = apellidosNombre; }
+
+// Setter
 void Usuario::setEmail(string email) { this->email = email; }
+
+// Setter
 void Usuario::setContrasena(string contrasena) { this->contrasena = contrasena; }
 
-// Getters
+// Getter
 string Usuario::getApellidosNombre() const { return this->apellidosNombre; }
+
+// Getter
 string Usuario::getIdUsuario() const { return this->idUsuario; }
+
+// Getter
 string Usuario::getEmail() const { return this->email; }
+
+// Getter
 string Usuario::getContrasena() const { return this->contrasena; }
+
+// Getter
 Fecha* Usuario::getFechaNac() const { return this->fechaNac; }
 
-
+// Mostrar
 void Usuario::mostrar() const {
     cout << "ID: " << this->idUsuario << endl;
     cout << "Nombre: " << this->apellidosNombre << endl;
@@ -86,6 +94,7 @@ void Usuario::mostrar() const {
     }
 }
 
+// Pasar a cadena
 string Usuario::pasarACadena() const {
     string cad = this->idUsuario + " " + this->apellidosNombre + " " +
                  this->email + " " + this->contrasena;
@@ -93,11 +102,10 @@ string Usuario::pasarACadena() const {
     return cad;
 }
 
-// Destructor: Libera la memoria de la fecha
+// Destructor
 Usuario::~Usuario() {
     delete fechaNac;
 
-    // 1. Borrar PlayLists (Composición: somos dueños)
     lPlayLists->moverPrimero();
     while (!lPlayLists->estaVacia()) {
         delete lPlayLists->consultar();
@@ -105,29 +113,29 @@ Usuario::~Usuario() {
     }
     delete lPlayLists;
 
-    // 2. Borrar Favoritos (Agregación: NO somos dueños de los artistas)
     delete lArtistasFavoritos;
 }
 
 // Crear PlayList
 void Usuario::crearPlayList(string nombre){
-	bool existe = false;
-	lPlayLists->moverPrimero();
+    bool existe = false;
+    lPlayLists->moverPrimero();
 
-	while(!lPlayLists->alFinal() && !existe){
-		if (lPlayLists->consultar()->getNombre() == nombre) {
-			existe = true;
-		}else{
-			lPlayLists->avanzar();
-		}
-	}
+    while(!lPlayLists->alFinal() && !existe){
+        if (lPlayLists->consultar()->getNombre() == nombre) {
+            existe = true;
+        }else{
+            lPlayLists->avanzar();
+        }
+    }
 
-	if(!existe){
-		PlayList *nueva = new PlayList(nombre);
-		lPlayLists->insertar(nueva);
-	}
+    if(!existe){
+        PlayList *nueva = new PlayList(nombre);
+        lPlayLists->insertar(nueva);
+    }
 }
 
+// Eliminar PlayList
 bool Usuario::eliminarPlayList(string nombre) {
     bool eliminada = false;
     lPlayLists->moverPrimero();
@@ -146,7 +154,7 @@ bool Usuario::eliminarPlayList(string nombre) {
     return eliminada;
 }
 
-// Añadir Cancion a Playlist
+// Añadir cancion a Playlist
 void Usuario::anadirCancionAPlayList(string nombrePL, Cancion *c) {
     bool encontrada = false;
     lPlayLists->moverPrimero();
@@ -161,7 +169,7 @@ void Usuario::anadirCancionAPlayList(string nombrePL, Cancion *c) {
     }
 }
 
-// Reproducir PlayList
+// Reproducir PlayLists
 void Usuario::reproducirPlayLists() {
     cout << "Reproduciendo todas las PlayLists de: " << apellidosNombre << endl;
 
@@ -170,7 +178,6 @@ void Usuario::reproducirPlayLists() {
     } else {
         lPlayLists->moverPrimero();
         while (!lPlayLists->alFinal()) {
-            // Cada PlayList se encarga de su propia reproduccion
             lPlayLists->consultar()->reproducirTodo();
             lPlayLists->avanzar();
         }
@@ -186,7 +193,6 @@ PlayList* Usuario::compartirPlayList(string nombrePL) {
     while (!lPlayLists->alFinal() && !encontrada) {
         if (lPlayLists->consultar()->getNombre() == nombrePL) {
             encontrada = true;
-            // Usamos el constructor de copia de PlayList para no compartir punteros [cite: 79, 138, 139]
             copia = new PlayList(*(lPlayLists->consultar()));
         } else {
             lPlayLists->avanzar();
@@ -216,7 +222,7 @@ void Usuario::mostrarFavoritos() const {
     }
 }
 
-// Eliminar Artista Favorito
+// Eliminar artista favorito
 void Usuario::eliminarArtistaFavorito(string nombreA) {
     bool encontrado = false;
     lArtistasFavoritos->moverPrimero();
@@ -225,7 +231,6 @@ void Usuario::eliminarArtistaFavorito(string nombreA) {
         if (lArtistasFavoritos->consultar()->getNombre() == nombreA) {
             encontrado = true;
             lArtistasFavoritos->consultar()->decrementarSeguidores();
-            // Solo eliminamos el nodo de la lista (el puntero)
             lArtistasFavoritos->eliminar();
         } else {
             lArtistasFavoritos->avanzar();
@@ -233,59 +238,52 @@ void Usuario::eliminarArtistaFavorito(string nombreA) {
     }
 }
 
-//Insertar Artista Favorito
+// Insertar artista favorito
 void Usuario::insertarArtistaFavorito(Artista * a){
-	if(a !=nullptr){
-		bool existe = false;
-		lArtistasFavoritos->moverPrimero();
-		while(!lArtistasFavoritos->alFinal() && !existe){
-			if(lArtistasFavoritos->consultar()->getNombre() == a->getNombre()){
-				existe = true;
-			}else{
-				lArtistasFavoritos->avanzar();
-			}
-		}
-		if(!existe){
-			lArtistasFavoritos->insertar(a);
+    if(a !=nullptr){
+        bool existe = false;
+        lArtistasFavoritos->moverPrimero();
+        while(!lArtistasFavoritos->alFinal() && !existe){
+            if(lArtistasFavoritos->consultar()->getNombre() == a->getNombre()){
+                existe = true;
+            }else{
+                lArtistasFavoritos->avanzar();
+            }
+        }
+        if(!existe){
+            lArtistasFavoritos->insertar(a);
             a->incrementarSeguidores();
-		}
-	}
+        }
+    }
 }
 
-
-
-// Funciones Globales //
-
+// Cargar usuarios
 void cargarUsuarios(Usuario* usuariosArchivo[], int &numUsuarios) {
     numUsuarios = 0;
 
     ifstream archivo("../usuarios.csv");
     if (!archivo.is_open()) {
-        // Esto te dirá si el programa no encuentra el archivo
         cerr << "ERROR: No encuentro el archivo usuarios.csv en la ruta actual." << endl;
     }
 
     string linea;
 
     if (archivo.is_open()) {
-        getline(archivo, linea); // Ignorar cabecera
+        getline(archivo, linea);
 
         while (getline(archivo, linea) && numUsuarios < MAX) {
             stringstream extractorDeDatos(linea);
             string id, nombre, email, pass, sDia, sMes, sAnio;
 
-            // Extracción por delimitadores
             getline(extractorDeDatos, id, ';');
             getline(extractorDeDatos, nombre, ';');
             getline(extractorDeDatos, email, ';');
             getline(extractorDeDatos, pass, ';');
 
-            // La fecha viene como dia/mes/anio
             getline(extractorDeDatos, sDia, '/');
             getline(extractorDeDatos, sMes, '/');
             getline(extractorDeDatos, sAnio, ';');
 
-            // Convertir y crear objeto con 'new'
             if (!id.empty()) {
                 usuariosArchivo[numUsuarios] = new Usuario(id, nombre, email, pass,
                                                stoi(sDia), stoi(sMes), stoi(sAnio));
@@ -298,43 +296,42 @@ void cargarUsuarios(Usuario* usuariosArchivo[], int &numUsuarios) {
     }
 }
 
+// Mostrar usuarios
 void mostrarUsuarios(TVector usuarios, int numUsuarios) {
     cout << "--- Listado de Usuarios Cargados (" << numUsuarios << ") ---" << endl;
     for (int i = 0; i < numUsuarios; i++) {
         cout << "[" << i + 1 << "] ";
-        usuarios[i]->mostrar(); // Llamamos al mostrar de cada objeto Usuario
+        usuarios[i]->mostrar();
         cout << "-----------------------" << endl;
     }
 }
 
+// Destruir usuarios
 void destruirUsuarios(TVector usuarios, int &numUsuarios) {
     for (int i = 0; i < numUsuarios; i++) {
-        delete usuarios[i];    // Esto llama al destructor de Usuario y luego al de Fecha
-        usuarios[i] = nullptr; // Buena práctica para evitar punteros "colgantes"
+        delete usuarios[i];
+        usuarios[i] = nullptr;
     }
-    numUsuarios = 0; // Reiniciamos el contador
+    numUsuarios = 0;
     cout << "Memoria liberada correctamente." << endl;
 }
 
+// Guardar usuarios por año
 void guardarUsuariosPorAnio(TVector usuarios, int numUsuarios, int anioFiltro) {
     ofstream fSal;
     fSal.open("usuarios_out.csv");
 
     if (fSal.is_open()) {
-        fSal << "idUsuario;apellidos y nombre;email;contraseña;dia/mes/año" << endl; // Cabecera
+        fSal << "idUsuario;apellidos y nombre;email;contraseña;dia/mes/año" << endl;
 
         for (int i = 0; i < numUsuarios; i++) {
-            // Suponiendo que has añadido un getter en Usuario para obtener el año
-            // o que puedes acceder a la fecha
-        	if (usuarios[i]->getFechaNac() != nullptr && usuarios[i]->getFechaNac()->getYear() == anioFiltro) {
-        	    fSal << usuarios[i]->pasarACadena() << endl;
-        	}
+            if (usuarios[i]->getFechaNac() != nullptr && usuarios[i]->getFechaNac()->getYear() == anioFiltro) {
+                fSal << usuarios[i]->pasarACadena() << endl;
+            }
         }
-        fSal.close(); // [cite: 21]
+        fSal.close();
         cout << "Fichero 'usuarios_out.csv' generado para el año " << anioFiltro << endl;
     } else {
         cerr << "Error al crear el fichero de salida." << endl;
     }
 }
-
-// --- --- --- --- --- --- --- --- --- --- --- --- //

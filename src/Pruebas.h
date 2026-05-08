@@ -3,8 +3,7 @@
 
 #include "Usuario.h"
 
-// Solo la declaración (la "promesa")
 void pruebasUsuario();
 void ejecutarPruebas();
 
-#endif /* PRUEBAS_H_ */
+#endif

@@ -24,7 +24,7 @@ void pruebasUsuario() {
     if(u1.getContrasena() != "1234")
         cout << " * Error con contraseña defecto" << endl;
 
-    // Caso 2: Constructor con parámetros (7 argumentos) [cite: 48, 51]
+    // Caso 2: Constructor con parámetros (7 argumentos)
     Usuario u2 = Usuario("1", "Candela", "gmail@com.a", "1234", 15, 5, 1995);
 
     if(u2.getApellidosNombre() != "Candela")

@@ -1,10 +1,3 @@
-/*
- * Fecha.h
- *
- *  Created on: 16 feb 2026
- *      Author: estudiante
- */
-
 #ifndef FECHA_H_
 #define FECHA_H_
 
@@ -20,29 +13,24 @@ private:
 
 public:
 	Fecha();
-	void setDia (int dia);
-	void setMes (int mes);
-	void setYear (int year);
-
-	//-- Dia del Mes --//
-	int diasDelMes() const;
-
-	//-- Año Bisiesto 'Si o No' --//
-	bool anioBisiesto() const;
-
-
 	Fecha (int dia, int mes, int year);
 	Fecha (Fecha &otraFecha);
+	~Fecha ();
+
+	// Getter
 	int getDia () const;
 	int getMes () const;
 	int getYear () const;
 
+	// Setter
+	void setDia (int dia);
+	void setMes (int mes);
+	void setYear (int year);
 
-	~Fecha ();
-
+	int diasDelMes() const;
+	bool anioBisiesto() const;
 	void mostrarF () const;
 	string pasarCadena() const;
 };
-
 
 #endif /* FECHA_H_ */

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-// Cambiamos el nombre para que no choque con el main de progPrincipal.cpp
+// Ejecutar pruebas
 void ejecutarPruebas() {
     cout << "--- EJECUTANDO BATERÍA DE PRUEBAS DEL SISTEMA ---" << endl;
 

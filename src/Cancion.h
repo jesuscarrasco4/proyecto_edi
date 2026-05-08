@@ -35,7 +35,6 @@ public:
 
     virtual ~Cancion();
 
-    // Sobrecarga de operadores
     bool operator==(const Cancion &otro) const; // Por nombre
     bool operator<(const Cancion &otro) const;  // Orden alfabético
 };

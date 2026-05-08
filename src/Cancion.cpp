@@ -39,29 +39,29 @@ void Cancion::setTitulo(string titulo) { this->titulo = titulo; }
 void Cancion::setGenero(string genero) { this->genero = genero; }
 void Cancion::setDuracion(int duracion) { this->duracion = duracion; }
 
+// Destructor
+Cancion::~Cancion() {
+	// TODO Auto-generated destructor stub
+}
+
 // Getters
 string Cancion::getTitulo() const { return this->titulo; }
 string Cancion::getGenero() const { return this->genero; }
 int Cancion::getDuracion() const { return this->duracion; }
 
-
-Cancion::~Cancion() {
-	// TODO Auto-generated destructor stub
-}
-
-// - Mostrar - //
+// Mostrar
 void Cancion::mostrar() const {
     cout << "Titulo: " << this->titulo << endl;
     cout << "Genero: " << this->genero << endl;
     cout << "Duracion: " << this->duracion << endl;
 }
 
-// - Sobrecargar con el operador '==' - //
+// Sobrecargar con el operador '=='
 bool Cancion::operator==(const Cancion &otro) const {
 	return this->titulo == otro.titulo;
 }
 
-// - Sobrecarga con el operador '<' - //
+// Sobrecarga con el operador '<'
 bool Cancion::operator<(const Cancion &otro) const {
 	return this->titulo < otro.titulo;
 }

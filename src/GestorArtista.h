@@ -7,53 +7,51 @@
 #include "BSTree.h"
 #include "KeyValue.h"
 
-// 1. Asegúrate de que esta macro es la que compruebas abajo [cite: 126, 137]
 // #define LISTA_ARTISTAS
 
 #if defined(LISTA_ARTISTAS)
 
-    class GestorArtistas { // Unificado a plural
-    private:
-        ListaDPI<Artista *> *lArtista;
-    public:
-        GestorArtistas();
-        GestorArtistas(const GestorArtistas &otro);
-        virtual ~GestorArtistas();
+class GestorArtistas {
+private:
+	ListaDPI<Artista *> *lArtista;
 
-        void insertar(string nombre, string pais);
-        Artista* buscar(string nombre);
-        Artista* artistaConMasSeguidores() const;
-        void mostrar() const;
-        int numElementos() const; // Nombre unificado
-    };
+public:
+	GestorArtistas();
+	GestorArtistas(const GestorArtistas &otro);
+	virtual ~GestorArtistas();
+
+	void insertar(string nombre, string pais);
+	Artista* buscar(string nombre);
+	Artista* artistaConMasSeguidores() const;
+	void mostrar() const;
+	int numElementos() const;
+};
 
 #else
 
-    class GestorArtistas {
-    private:
-        BSTree<KeyValue<string, Artista*>> *aArtistas;
+class GestorArtistas {
+private:
+	BSTree<KeyValue<string, Artista*>> *aArtistas;
 
-        // Métodos privados para el árbol [cite: 206, 207]
-        void copiarArbol(BSTree<KeyValue<string, Artista*>> *otro);
-        void mostrarInorden(BSTree<KeyValue<string, Artista*>> *a) const;
-        int contarNodos(BSTree<KeyValue<string, Artista*>> *a) const;
-        Artista* artistaConMasSeguidores(BSTree<KeyValue<string, Artista*>> *a, Artista *mejor) const;
-        // Método necesario para extraer el valor del árbol [cite: 220]
-        Artista* buscarRecursivo(BSTree<KeyValue<string, Artista*>> *arbol, const KeyValue<string, Artista*> &buscado);
-        int calcularAltura(BSTree<KeyValue<string, Artista*>> *a) const;
-        void liberarArtistas(BSTree<KeyValue<string, Artista*>> *a);
+	void copiarArbol(BSTree<KeyValue<string, Artista*>> *otro);
+	void mostrarInorden(BSTree<KeyValue<string, Artista*>> *a) const;
+	int contarNodos(BSTree<KeyValue<string, Artista*>> *a) const;
+	Artista* artistaConMasSeguidores(BSTree<KeyValue<string, Artista*>> *a, Artista *mejor) const;
+	Artista* buscarRecursivo(BSTree<KeyValue<string, Artista*>> *arbol, const KeyValue<string, Artista*> &buscado);
+	int calcularAltura(BSTree<KeyValue<string, Artista*>> *a) const;
+	void liberarArtistas(BSTree<KeyValue<string, Artista*>> *a);
 
-    public:
-        GestorArtistas();
-        GestorArtistas(const GestorArtistas &otro);
-        ~GestorArtistas();
+public:
+	GestorArtistas();
+	GestorArtistas(const GestorArtistas &otro);
+	~GestorArtistas();
 
-        // Interfaz pública idéntica [cite: 214]
-        void insertar(string nombre, string pais);
-        Artista* buscar(string nombre);
-        Artista* artistaConMasSeguidores() const;
-        void mostrar() const;
-        int numElementos() const;
-    };
+	void insertar(string nombre, string pais);
+	Artista* buscar(string nombre);
+	Artista* artistaConMasSeguidores() const;
+	void mostrar() const;
+	int numElementos() const;
+};
+
 #endif
 #endif

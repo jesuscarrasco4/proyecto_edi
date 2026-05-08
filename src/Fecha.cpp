@@ -1,60 +1,64 @@
-/*
- * Fecha.cpp
- *
- *  Created on: 16 feb 2026
- *      Author: estudiante
- */
-
 #include "Fecha.h"
 
+// Constructor por defecto
 Fecha::Fecha(){
 	dia = 1;
 	mes= 1;
 	year = 1;
 }
 
+// Constructor parametrizado
 Fecha::Fecha(int dia, int mes, int year){
 	this->dia = dia;
 	this->mes = mes;
 	this->year = year;
 }
 
+// Setter
 void Fecha::setDia(int dia){
 	this->dia = dia;
 }
 
+// Setter
 void Fecha::setMes(int mes){
 	this->mes = mes;
 }
 
+// Setter
 void Fecha::setYear(int year){
 	this->year = year;
 }
 
+// Constructor por copia
 Fecha::Fecha(Fecha &otraFecha){
 	dia = otraFecha.dia;
 	mes= otraFecha.mes;
 	year = otraFecha.year;
 }
+
+// Getter
 int Fecha::getDia() const {
 	return this->dia;
 }
 
+// Getter
 int Fecha::getMes() const {
 	return this->mes;
 }
 
+// Getter
 int Fecha::getYear() const {
 	return this->year;
 }
 
+// Mostrar fecha
 void Fecha::mostrarF () const{
 	cout <<"Día: " << this->dia <<endl
 		 <<"Mes: " << this->mes <<endl
 		 <<"Año: " << this->year <<endl;
 }
 
-//-- Dia del Mes --//
+// Calcular días del mes
 int Fecha::diasDelMes()const{
 	int limite = 0;
 
@@ -90,18 +94,16 @@ int Fecha::diasDelMes()const{
 	return limite;
 }
 
-//-- Año Bisiesto --//
+// Comprobar año bisiesto
 bool Fecha::anioBisiesto() const {
-    // Un año es bisiesto si:
-    // (Es divisible por 4 Y NO por 100) O (Es divisible por 400)
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);		    // (Es divisible por 4 Y NO por 100) O (Es divisible por 400)
 }
 
-
+// Destructor
 Fecha::~Fecha(){
 }
 
+// Convertir a cadena
 string Fecha::pasarCadena() const {
-    // Convertimos los enteros a string y los concatenamos
     return to_string(dia) + "/" + to_string(mes) + "/" + to_string(year);
 }

@@ -11,11 +11,11 @@ void mostrarMenu() {
     cout << "\n=============   MENU   =============" << endl;
     cout << "1. Mostrar todos los Usuarios" << endl;
     cout << "2. Mostrar todos los Artistas y Canciones" << endl;
-    cout << "3. Buscar Usuario (Info completa)" << endl;
+    cout << "3. Buscar Usuario" << endl;
     cout << "4. Compartir PlayList entre Usuarios" << endl;
     cout << "5. Buscar Artista por nombre" << endl;
     cout << "6. Eliminar PlayList" << endl;
-    cout << "7. Anadir Artista a Favoritos" << endl;
+    cout << "7. Añadir Artista a Favoritos" << endl;
     cout << "8. Eliminar Artista de Favoritos" << endl;
     cout << "9. Mostrar Artista con mas Seguidores" << endl;
     cout << "10. Ejecutar Bateria de Pruebas" << endl;
