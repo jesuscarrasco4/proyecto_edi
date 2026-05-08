@@ -13,6 +13,7 @@ CPP_SRCS += \
 ../src/PlayList.cpp \
 ../src/PruebaGestorArtistas.cpp \
 ../src/PruebaGestorUsuarios.cpp \
+../src/PruebaPlayList.cpp \
 ../src/Pruebas.cpp \
 ../src/PruebasArtista.cpp \
 ../src/PruebasCancion.cpp \
@@ -31,6 +32,7 @@ CPP_DEPS += \
 ./src/PlayList.d \
 ./src/PruebaGestorArtistas.d \
 ./src/PruebaGestorUsuarios.d \
+./src/PruebaPlayList.d \
 ./src/Pruebas.d \
 ./src/PruebasArtista.d \
 ./src/PruebasCancion.d \
@@ -49,6 +51,7 @@ OBJS += \
 ./src/PlayList.o \
 ./src/PruebaGestorArtistas.o \
 ./src/PruebaGestorUsuarios.o \
+./src/PruebaPlayList.o \
 ./src/Pruebas.o \
 ./src/PruebasArtista.o \
 ./src/PruebasCancion.o \
@@ -70,7 +73,7 @@ src/%.o: ../src/%.cpp src/subdir.mk
 clean: clean-src
 
 clean-src:
-	-$(RM) ./src/AlgoritmosListaDPI.d ./src/AlgoritmosListaDPI.o ./src/Artista.d ./src/Artista.o ./src/Cancion.d ./src/Cancion.o ./src/Fecha.d ./src/Fecha.o ./src/GestorArtista.d ./src/GestorArtista.o ./src/GestorUsuarios.d ./src/GestorUsuarios.o ./src/PlayList.d ./src/PlayList.o ./src/PruebaGestorArtistas.d ./src/PruebaGestorArtistas.o ./src/PruebaGestorUsuarios.d ./src/PruebaGestorUsuarios.o ./src/Pruebas.d ./src/Pruebas.o ./src/PruebasArtista.d ./src/PruebasArtista.o ./src/PruebasCancion.d ./src/PruebasCancion.o ./src/Sistema.d ./src/Sistema.o ./src/Usuario.d ./src/Usuario.o ./src/main.d ./src/main.o ./src/progPrincipal.d ./src/progPrincipal.o
+	-$(RM) ./src/AlgoritmosListaDPI.d ./src/AlgoritmosListaDPI.o ./src/Artista.d ./src/Artista.o ./src/Cancion.d ./src/Cancion.o ./src/Fecha.d ./src/Fecha.o ./src/GestorArtista.d ./src/GestorArtista.o ./src/GestorUsuarios.d ./src/GestorUsuarios.o ./src/PlayList.d ./src/PlayList.o ./src/PruebaGestorArtistas.d ./src/PruebaGestorArtistas.o ./src/PruebaGestorUsuarios.d ./src/PruebaGestorUsuarios.o ./src/PruebaPlayList.d ./src/PruebaPlayList.o ./src/Pruebas.d ./src/Pruebas.o ./src/PruebasArtista.d ./src/PruebasArtista.o ./src/PruebasCancion.d ./src/PruebasCancion.o ./src/Sistema.d ./src/Sistema.o ./src/Usuario.d ./src/Usuario.o ./src/main.d ./src/main.o ./src/progPrincipal.d ./src/progPrincipal.o
 
 .PHONY: clean-src
 

@@ -46,6 +46,9 @@ public:
 
     void insertarCancion(string titulo, string genero, int duracion);
     bool buscarCancion(string titulo, Cancion &c);
+    Cancion* buscarCancionPtr(const string &titulo) const;
+    void incrementarSeguidores();
+    void decrementarSeguidores();
 };
 
 #endif /* ARTISTA_H_ */

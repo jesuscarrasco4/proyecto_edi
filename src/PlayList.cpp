@@ -21,7 +21,7 @@ PlayList::PlayList() {
 
 // Constructor Parametrizado
 PlayList::PlayList(string nombre){
-    this->nombre = "";
+    this->nombre = nombre;
     this->numeroCanciones = 0;
     this->totalDuracion = 0;
     this->colaReproduccion = new Cola<Cancion*>();    //Inicializamos la Cola
@@ -36,16 +36,17 @@ PlayList::PlayList(const PlayList &otraPlayList){
 
 	Cola<Cancion*> aux;
 	Cancion* c;
+	Cola<Cancion*> *origen = const_cast<Cola<Cancion*> *>(otraPlayList.colaReproduccion);
 
-	//PAsamos de 'otra' PlayList a la 'aux'
-	while (!otraPlayList.colaReproduccion->estaVacia()) {
-        c = otraPlayList.colaReproduccion->getPrimero();
+	// Recorremos la cola origen restaurandola al final para mantener su estado.
+	while (!origen->estaVacia()) {
+        c = origen->getPrimero();
 	    this->colaReproduccion->encolar(c);
 	    aux.encolar(c);
-        otraPlayList.colaReproduccion->desencolar();
+        origen->desencolar();
 	}
 	while(!aux.estaVacia()){
-		otraPlayList.colaReproduccion->encolar(aux.getPrimero());
+		origen->encolar(aux.getPrimero());
 		aux.desencolar();
 	}
 }
@@ -80,12 +81,61 @@ void PlayList::reproducirTodo() {
         cout << "La PlayList " << nombre << " esta vacia." << endl;
     } else {
         cout << "--- Reproduciendo PlayList: " << nombre << " ---" << endl;
-        // En una cola, mostramos y desencolamos/reencolamos o usamos una auxiliar
-        // para no perder los datos si queremos que sea una reproduccion real.
-        // Por ahora, simulamos el acceso al primero:
-        Cancion *actual = colaReproduccion->getPrimero();
-        actual->mostrar();
+        Cola<Cancion*> aux;
+        while (!colaReproduccion->estaVacia()) {
+            Cancion *actual = colaReproduccion->getPrimero();
+            actual->mostrar();
+            aux.encolar(actual);
+            colaReproduccion->desencolar();
+        }
+        while (!aux.estaVacia()) {
+            colaReproduccion->encolar(aux.getPrimero());
+            aux.desencolar();
+        }
     }
+}
+
+void PlayList::reproducirAPartir(int posicion) {
+    if (colaReproduccion->estaVacia()) {
+        cout << "La PlayList " << nombre << " esta vacia." << endl;
+        return;
+    }
+    if (posicion <= 0 || posicion > numeroCanciones) {
+        cout << "Posicion de inicio invalida para la PlayList " << nombre << "." << endl;
+        return;
+    }
+
+    Cola<Cancion*> aux;
+    int indice = 1;
+
+    // Rotamos la cola hasta situar en primer lugar la posicion deseada.
+    while (!colaReproduccion->estaVacia()) {
+        Cancion *actual = colaReproduccion->getPrimero();
+        colaReproduccion->desencolar();
+        if (indice < posicion) {
+            colaReproduccion->encolar(actual);
+        } else {
+            aux.encolar(actual);
+        }
+        indice++;
+    }
+    while (!aux.estaVacia()) {
+        colaReproduccion->encolar(aux.getPrimero());
+        aux.desencolar();
+    }
+
+    cout << "--- Reproduciendo PlayList desde posicion " << posicion << ": " << nombre << " ---" << endl;
+    reproducirTodo();
+}
+
+void PlayList::setNombre(string nombre) {
+    this->nombre = nombre;
+}
+
+void PlayList::mostrar() const {
+    cout << "PlayList: " << nombre << endl;
+    cout << "Numero de canciones: " << numeroCanciones << endl;
+    cout << "Duracion total: " << totalDuracion << " segundos" << endl;
 }
 
 //Getters

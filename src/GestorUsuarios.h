@@ -16,7 +16,7 @@ using namespace std;
 #include "KeyValue.h"
 #include "BSTree.h"
 
-#define LISTA_USUARIOS
+// #define LISTA_USUARIOS
 
 #if defined(LISTA_USUARIOS)
 	class GestorUsuarios {
@@ -41,8 +41,12 @@ using namespace std;
 		BSTree<KeyValue<string, Usuario*>> *aUsuarios;
 
 		// Métodos privados auxiliares necesarios para el árbol
-		void copiarArbol(BSTree<KeyValue<string, Usuario*>> *otroArbol);
+        void copiarArbol(BSTree<KeyValue<string, Usuario*>> *arbol);
         void mostrarRecursivo(BSTree<KeyValue<string, Usuario*>> *a) const;
+        Usuario* buscarRecursivo(BSTree<KeyValue<string, Usuario*>> *arbol, const KeyValue<string, Usuario*> &buscado);
+        int contarNodos(BSTree<KeyValue<string, Usuario*>> *arbol) const;
+        int calcularAltura(BSTree<KeyValue<string, Usuario*>> *arbol) const;
+        void liberarUsuarios(BSTree<KeyValue<string, Usuario*>> *arbol);
 
 	public:
         GestorUsuarios();
@@ -55,7 +59,7 @@ using namespace std;
        	void mostrar() const;                                  // Muestra todos los usuarios
         Usuario* buscar(string apellidosNombre);               // Devuelve la info si lo encuentra
 
-	}
+	};
 #endif
 
 #endif /* GESTORUSUARIOS_H_ */

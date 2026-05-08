@@ -22,8 +22,17 @@ private:
 	Cola <Cancion *> *colaReproduccion;
 
 public:
+	// PRE: ---
+	// DESC: Construye una playlist vacia.
+	// COMPLEJIDAD: O(1)
 	PlayList();
+	// PRE: nombre puede ser cualquier cadena.
+	// DESC: Construye una playlist vacia con el nombre indicado.
+	// COMPLEJIDAD: O(1)
 	PlayList(string nombre);
+	// PRE: ---
+	// DESC: Crea una copia de la cola de canciones (agregacion: copia punteros, no canciones).
+	// COMPLEJIDAD: O(n), siendo n el numero de canciones.
 	PlayList(const PlayList &otraPlayList);
 	virtual ~PlayList();
 
@@ -40,6 +49,9 @@ public:
     // --  MOSTRAR  -- //
     void mostrar() const;
     void reproducirTodo();
+    // PRE: posicion > 0
+    // DESC: Reproduce de forma circular a partir de la posicion indicada sin perder datos.
+    // COMPLEJIDAD: O(n), siendo n el numero de canciones.
     void reproducirAPartir(int posicion);
 
 };

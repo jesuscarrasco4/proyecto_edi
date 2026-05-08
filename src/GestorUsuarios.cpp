@@ -108,27 +108,24 @@
 	}
 
 	GestorUsuarios::GestorUsuarios(const GestorUsuarios &otroGestorUsuarios) {
-		lUsuarios = new ListaDPI<Usuario *>();
-		otroGestorUsuarios.lUsuarios->moverPrimero();
-		while(!otroGestorUsuarios.lUsuarios->alFinal()){
-			Usuario *original = otroGestorUsuarios.lUsuarios->consultar();
-			Usuario *copia = new Usuario(*original);
-			lUsuarios->insertar(copia);
-			otroGestorUsuarios.lUsuarios->avanzar();
-		}
+        aUsuarios = new BSTree<KeyValue<string, Usuario*>>();
+        copiarArbol(otroGestorUsuarios.aUsuarios);
 	}
 
 	GestorUsuarios::~GestorUsuarios() {
+        liberarUsuarios(aUsuarios);
 		delete aUsuarios;
 	}
 
 	// Metodo Insertar
 	void GestorUsuarios::insertar(string id, string nombre, string email, string pass, int d, int m, int a){
+        if (buscar(nombre) != nullptr) {
+            return;
+        }
 		Usuario *nuevoUsuario = new Usuario(id, nombre, email, pass, d, m, a);
 
 		KeyValue<string, Usuario*> par(nombre, nuevoUsuario);
-
-		if(!aUsuarios->insertar(par);
+		aUsuarios->insertar(par);
 	}
 
 	// Metodo Mostrar
@@ -143,6 +140,7 @@
 
 	        // 2. Información estadística requerida por el PDF
 	        cout << "\nTotal de usuarios: " << numElementos() << endl;
+            cout << "Niveles del arbol: " << calcularAltura(aUsuarios) << endl;
 	    }
 	}
 
@@ -162,6 +160,12 @@
 	}
 
 	//Metodo Buscar
+    Usuario* GestorUsuarios::buscar(string apellidosNombre) {
+        KeyValue<string, Usuario*> buscado(apellidosNombre);
+        return buscarRecursivo(aUsuarios, buscado);
+    }
+
+	//Metodo Buscar recursivo
 	Usuario* GestorUsuarios::buscarRecursivo(BSTree<KeyValue<string, Usuario*>> *arbol, const KeyValue<string, Usuario*> &buscado) {
 	    if (arbol->estaVacio()) {
 	        return nullptr;
@@ -193,6 +197,35 @@
 	    // Suma 1 (raíz) + hijos izquierda + hijos derecha [cite: 5, 9]
 	    return 1 + contarNodos(arbol->getIzq()) + contarNodos(arbol->getDer());
 	}
+
+    int GestorUsuarios::calcularAltura(BSTree<KeyValue<string, Usuario*>> *arbol) const {
+        if (arbol->estaVacio()) {
+            return 0;
+        }
+        int altIzq = calcularAltura(arbol->getIzq());
+        int altDer = calcularAltura(arbol->getDer());
+        return 1 + (altIzq > altDer ? altIzq : altDer);
+    }
+
+    void GestorUsuarios::copiarArbol(BSTree<KeyValue<string, Usuario*>> *arbol) {
+        if (arbol == nullptr || arbol->estaVacio()) {
+            return;
+        }
+        KeyValue<string, Usuario*> dato = arbol->getDato();
+        Usuario *copiaUsuario = new Usuario(*(dato.getValue()));
+        aUsuarios->insertar(KeyValue<string, Usuario*>(dato.getKey(), copiaUsuario));
+        copiarArbol(arbol->getIzq());
+        copiarArbol(arbol->getDer());
+    }
+
+    void GestorUsuarios::liberarUsuarios(BSTree<KeyValue<string, Usuario*>> *arbol) {
+        if (arbol == nullptr || arbol->estaVacio()) {
+            return;
+        }
+        liberarUsuarios(arbol->getIzq());
+        liberarUsuarios(arbol->getDer());
+        delete arbol->getDato().getValue();
+    }
 
 #endif
 

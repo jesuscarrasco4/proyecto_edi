@@ -63,6 +63,22 @@ using namespace std;
 		return encontrado;
 	}
 
+    Artista* GestorArtistas::artistaConMasSeguidores() const {
+        Artista *mejor = nullptr;
+        lArtista->moverPrimero();
+
+        while (!lArtista->alFinal()) {
+            Artista *actual = lArtista->consultar();
+            if (mejor == nullptr ||
+                actual->getNumeroSeguidores() > mejor->getNumeroSeguidores()) {
+                mejor = actual;
+            }
+            lArtista->avanzar();
+        }
+
+        return mejor;
+    }
+
 	void GestorArtistas::mostrar() const{
 		if(lArtista->estaVacia()){
 			cout << "El gestor de artista esta vacio" << endl;
@@ -93,11 +109,20 @@ using namespace std;
         aArtistas = new BSTree<KeyValue<string, Artista*>>();
     }
 
+    GestorArtistas::GestorArtistas(const GestorArtistas &otro) {
+        aArtistas = new BSTree<KeyValue<string, Artista*>>();
+        copiarArbol(otro.aArtistas);
+    }
+
     GestorArtistas::~GestorArtistas() {
+        liberarArtistas(aArtistas);
         delete aArtistas;
     }
 
     void GestorArtistas::insertar(string nombre, string pais) {
+        if (buscar(nombre) != nullptr) {
+            return;
+        }
         Artista *nuevo = new Artista(nombre, pais, 0);
         KeyValue<string, Artista*> par(nombre, nuevo);
         aArtistas->insertar(par);
@@ -117,6 +142,25 @@ using namespace std;
         if (arbol->getDato() == buscado) return arbol->getDato().getValue();
         if (buscado < arbol->getDato()) return buscarRecursivo(arbol->getIzq(), buscado);
         return buscarRecursivo(arbol->getDer(), buscado);
+    }
+
+    Artista* GestorArtistas::artistaConMasSeguidores() const {
+        return artistaConMasSeguidores(aArtistas, nullptr);
+    }
+
+    Artista* GestorArtistas::artistaConMasSeguidores(BSTree<KeyValue<string, Artista*>> *a, Artista *mejor) const {
+        if (a == nullptr || a->estaVacio()) {
+            return mejor;
+        }
+
+        Artista *actual = a->getDato().getValue();
+        if (mejor == nullptr ||
+            actual->getNumeroSeguidores() > mejor->getNumeroSeguidores()) {
+            mejor = actual;
+        }
+
+        mejor = artistaConMasSeguidores(a->getIzq(), mejor);
+        return artistaConMasSeguidores(a->getDer(), mejor);
     }
 
     void GestorArtistas::mostrar() const {
@@ -155,6 +199,26 @@ using namespace std;
         int altDer = calcularAltura(a->getDer());
 
         return 1 + (altIzq > altDer ? altIzq : altDer);
+    }
+
+    void GestorArtistas::copiarArbol(BSTree<KeyValue<string, Artista*>> *otro) {
+        if (otro == nullptr || otro->estaVacio()) {
+            return;
+        }
+        KeyValue<string, Artista*> dato = otro->getDato();
+        Artista *copiaArtista = new Artista(*(dato.getValue()));
+        aArtistas->insertar(KeyValue<string, Artista*>(dato.getKey(), copiaArtista));
+        copiarArbol(otro->getIzq());
+        copiarArbol(otro->getDer());
+    }
+
+    void GestorArtistas::liberarArtistas(BSTree<KeyValue<string, Artista*>> *a) {
+        if (a == nullptr || a->estaVacio()) {
+            return;
+        }
+        liberarArtistas(a->getIzq());
+        liberarArtistas(a->getDer());
+        delete a->getDato().getValue();
     }
 
 #endif

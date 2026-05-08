@@ -22,6 +22,7 @@
 
         void insertar(string nombre, string pais);
         Artista* buscar(string nombre);
+        Artista* artistaConMasSeguidores() const;
         void mostrar() const;
         int numElementos() const; // Nombre unificado
     };
@@ -36,20 +37,23 @@
         void copiarArbol(BSTree<KeyValue<string, Artista*>> *otro);
         void mostrarInorden(BSTree<KeyValue<string, Artista*>> *a) const;
         int contarNodos(BSTree<KeyValue<string, Artista*>> *a) const;
+        Artista* artistaConMasSeguidores(BSTree<KeyValue<string, Artista*>> *a, Artista *mejor) const;
         // Método necesario para extraer el valor del árbol [cite: 220]
         Artista* buscarRecursivo(BSTree<KeyValue<string, Artista*>> *arbol, const KeyValue<string, Artista*> &buscado);
         int calcularAltura(BSTree<KeyValue<string, Artista*>> *a) const;
+        void liberarArtistas(BSTree<KeyValue<string, Artista*>> *a);
 
     public:
-        GestorArtistas(); // [cite: 209]
-        GestorArtistas(const GestorArtistas &otro); // [cite: 210]
-        ~GestorArtistas(); // [cite: 212]
+        GestorArtistas();
+        GestorArtistas(const GestorArtistas &otro);
+        ~GestorArtistas();
 
         // Interfaz pública idéntica [cite: 214]
-        void insertar(string nombre, string pais); // [cite: 217]
-        Artista* buscar(string nombre); // [cite: 220]
-        void mostrar() const; // [cite: 222]
+        void insertar(string nombre, string pais);
+        Artista* buscar(string nombre);
+        Artista* artistaConMasSeguidores() const;
+        void mostrar() const;
         int numElementos() const;
     };
 #endif
-#endif /* GESTORARTISTA_H_ */
+#endif

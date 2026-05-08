@@ -53,6 +53,7 @@ public:
 
 	// --- MÉTODOS A IMPLEMENTAR/MODIFICAR ---
 	void crearPlayList(string nombre); // [cite: 74]
+	bool eliminarPlayList(string nombre);
 	void anadirCancionAPlayList(string nombrePL, Cancion *c); // [cite: 76]
 	void reproducirPlayLists(); // Reproduce todas [cite: 77]
 

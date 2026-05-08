@@ -82,7 +82,7 @@ void Artista::mostrar() const {
         lCanciones->moverPrimero();
         while (!lCanciones->alFinal()) {
             cout << "  - ";
-            lCanciones->consultar()->mostrar(); // Llama al mostrar de Cancion
+            lCanciones->consultar()->mostrar();
             lCanciones->avanzar();
         }
     }
@@ -136,6 +136,30 @@ bool Artista::buscarCancion(string titulo, Cancion &c) {
     }
 
     return encontrada;
+}
+
+Cancion* Artista::buscarCancionPtr(const string &titulo) const {
+    Cancion *encontrada = nullptr;
+    lCanciones->moverPrimero();
+    while (!lCanciones->alFinal() && encontrada == nullptr) {
+        Cancion *actual = lCanciones->consultar();
+        if (actual->getTitulo() == titulo) {
+            encontrada = actual;
+        } else {
+            lCanciones->avanzar();
+        }
+    }
+    return encontrada;
+}
+
+void Artista::incrementarSeguidores() {
+    numeroSeguidores++;
+}
+
+void Artista::decrementarSeguidores() {
+    if (numeroSeguidores > 0) {
+        numeroSeguidores--;
+    }
 }
 
 int Artista::numCanciones() const {

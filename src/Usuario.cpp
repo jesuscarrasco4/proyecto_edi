@@ -120,12 +120,30 @@ void Usuario::crearPlayList(string nombre){
 		}else{
 			lPlayLists->avanzar();
 		}
-
-		if(!existe){
-			PlayList *nueva = new PlayList(nombre);
-			lPlayLists->insertar(nueva);
-		}
 	}
+
+	if(!existe){
+		PlayList *nueva = new PlayList(nombre);
+		lPlayLists->insertar(nueva);
+	}
+}
+
+bool Usuario::eliminarPlayList(string nombre) {
+    bool eliminada = false;
+    lPlayLists->moverPrimero();
+
+    while (!lPlayLists->alFinal() && !eliminada) {
+        if (lPlayLists->consultar()->getNombre() == nombre) {
+            PlayList *pl = lPlayLists->consultar();
+            delete pl;
+            lPlayLists->eliminar();
+            eliminada = true;
+        } else {
+            lPlayLists->avanzar();
+        }
+    }
+
+    return eliminada;
 }
 
 // Añadir Cancion a Playlist
@@ -206,6 +224,7 @@ void Usuario::eliminarArtistaFavorito(string nombreA) {
     while (!lArtistasFavoritos->alFinal() && !encontrado) {
         if (lArtistasFavoritos->consultar()->getNombre() == nombreA) {
             encontrado = true;
+            lArtistasFavoritos->consultar()->decrementarSeguidores();
             // Solo eliminamos el nodo de la lista (el puntero)
             lArtistasFavoritos->eliminar();
         } else {
@@ -228,6 +247,7 @@ void Usuario::insertarArtistaFavorito(Artista * a){
 		}
 		if(!existe){
 			lArtistasFavoritos->insertar(a);
+            a->incrementarSeguidores();
 		}
 	}
 }
@@ -239,7 +259,7 @@ void Usuario::insertarArtistaFavorito(Artista * a){
 void cargarUsuarios(Usuario* usuariosArchivo[], int &numUsuarios) {
     numUsuarios = 0;
 
-    ifstream archivo("usuarios.csv");
+    ifstream archivo("../usuarios.csv");
     if (!archivo.is_open()) {
         // Esto te dirá si el programa no encuentra el archivo
         cerr << "ERROR: No encuentro el archivo usuarios.csv en la ruta actual." << endl;

@@ -7,6 +7,7 @@
 #include "PruebasCancion.h"
 #include "PruebaGestorUsuarios.h"
 #include "PruebaGestorArtistas.h"
+#include "PruebaPlayList.h"
 
 using namespace std;
 
@@ -14,8 +15,10 @@ using namespace std;
 void ejecutarPruebas() {
     cout << "--- EJECUTANDO BATERÍA DE PRUEBAS DEL SISTEMA ---" << endl;
 
+    pruebasUsuario();
     pruebasArtista();
     pruebasCancion();
+    pruebasPlayList();
     pruebasGestorUsuarios();
     pruebasGestorArtistas();
     pruebasUsuarioSesion78();

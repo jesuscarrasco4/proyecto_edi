@@ -62,6 +62,8 @@ void pruebasUsuarioSesion78() {
     // 3. Probar Gestión de Favoritos
     cout << "[2] Insertando Artista Favorito..." << endl;
     u1->insertarArtistaFavorito(a1);
+    cout << "Seguidores tras insertar favorito (esperado 1001): "
+         << a1->getNumeroSeguidores() << endl;
     u1->mostrarFavoritos();
 
     // 4. Probar Compartir PlayList (Copia Crítica)
@@ -75,6 +77,8 @@ void pruebasUsuarioSesion78() {
     // 5. Probar Eliminación de Favoritos
     cout << "\n[4] Eliminando Artista Favorito..." << endl;
     u1->eliminarArtistaFavorito("Coldplay");
+    cout << "Seguidores tras eliminar favorito (esperado 1000): "
+         << a1->getNumeroSeguidores() << endl;
     u1->mostrarFavoritos();
 
     // 6. Probar Reproducción

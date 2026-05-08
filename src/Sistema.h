@@ -29,6 +29,11 @@ public:
     void mostrarArtistas() const;
 
     void buscarUsuario(string nombre);
+    void buscarArtista(string nombre);
+    void eliminarPlayList(string nombreUsuario, string nombrePL);
+    void anadirArtistaFavorito(string nombreUsuario, string nombreArtista);
+    void eliminarArtistaFavorito(string nombreUsuario, string nombreArtista);
+    void mostrarArtistaConMasSeguidores() const;
     void compartirPlayList(string nombreOrigen, string nombrePL, string nombreDestino);
 };
 

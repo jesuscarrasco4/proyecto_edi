@@ -6,8 +6,45 @@
  */
 
 #include "Sistema.h"
+#include <cctype>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
+
+namespace {
+bool convertirEnteroSeguro(const string &texto, int &valor) {
+    try {
+        size_t idx = 0;
+        valor = stoi(texto, &idx);
+        return idx == texto.size();
+    } catch (...) {
+        return false;
+    }
+}
+
+bool abrirCSV(ifstream &archivo, const string &nombre) {
+    archivo.open("../" + nombre);
+    if (!archivo.is_open()) {
+        archivo.clear();
+        archivo.open(nombre);
+    }
+    return archivo.is_open();
+}
+
+string limpiarExtremos(const string &texto) {
+    size_t inicio = 0;
+    size_t fin = texto.size();
+
+    while (inicio < fin && isspace(static_cast<unsigned char>(texto[inicio]))) {
+        inicio++;
+    }
+    while (fin > inicio && isspace(static_cast<unsigned char>(texto[fin - 1]))) {
+        fin--;
+    }
+
+    return texto.substr(inicio, fin - inicio);
+}
+}
 
 // Constructor Parametrizado
 Sistema::Sistema(string nombreSistema) {
@@ -33,6 +70,12 @@ Sistema::Sistema() {
     this->cargarPlayList();
 }
 
+Sistema::Sistema(const Sistema &otro) {
+    this->nombreSistema = otro.nombreSistema;
+    this->usuarios = new GestorUsuarios(*(otro.usuarios));
+    this->artistas = new GestorArtistas(*(otro.artistas));
+}
+
 // Destructor: Libera los gestores [cite: 144]
 Sistema::~Sistema() {
     delete usuarios; // Llama al destructor de GestorUsuarios
@@ -40,10 +83,10 @@ Sistema::~Sistema() {
 }
 
 void Sistema::cargarUsuarios() {
-    ifstream archivo("usuarios.csv");
+    ifstream archivo;
     string linea;
 
-    if (archivo.is_open()) {
+    if (abrirCSV(archivo, "usuarios.csv")) {
         getline(archivo, linea); // Saltar cabecera [cite: 116]
 
         while (getline(archivo, linea)) {
@@ -65,8 +108,15 @@ void Sistema::cargarUsuarios() {
                 getline(ssFecha, sMes, '/');
                 getline(ssFecha, sAnio, '/');
 
-                // Insertar usando el gestor del sistema
-                usuarios->insertar(id, nombre, email, pass, stoi(sDia), stoi(sMes), stoi(sAnio));
+                int dia = 0, mes = 0, anio = 0;
+                if (convertirEnteroSeguro(sDia, dia) &&
+                    convertirEnteroSeguro(sMes, mes) &&
+                    convertirEnteroSeguro(sAnio, anio)) {
+                    // Insertar usando el gestor del sistema
+                    usuarios->insertar(id, nombre, email, pass, dia, mes, anio);
+                } else {
+                    cout << "[WARN] Usuario ignorado por fecha invalida: " << linea << endl;
+                }
             }
         }
         archivo.close();
@@ -74,10 +124,10 @@ void Sistema::cargarUsuarios() {
 }
 
 void Sistema::cargarArtistas() {
-    ifstream archivo("artistas.csv");
+    ifstream archivo;
     string linea;
 
-    if (!archivo.is_open()) {
+    if (!abrirCSV(archivo, "artistas.csv")) {
         cout << "[ERROR] No se pudo abrir artistas.csv" << endl;
         return;
     }
@@ -101,10 +151,10 @@ void Sistema::cargarArtistas() {
 }
 
 void Sistema::cargarCanciones() {
-    ifstream archivo("canciones.csv");
+    ifstream archivo;
     string linea;
 
-    if (archivo.is_open()) {
+    if (abrirCSV(archivo, "canciones.csv")) {
         getline(archivo, linea); // Saltar cabecera
 
         while (getline(archivo, linea)) {
@@ -121,8 +171,13 @@ void Sistema::cargarCanciones() {
                 // 1. Localizamos al artista en nuestro gestor
                 Artista *a = artistas->buscar(nombreArtista);
                 if (a != nullptr) {
-                    // 2. Si existe, le añadimos la canción
-                    a->insertarCancion(titulo, genero, stoi(sDuracion));
+                    int duracion = 0;
+                    if (convertirEnteroSeguro(sDuracion, duracion)) {
+                        // 2. Si existe, le añadimos la canción
+                        a->insertarCancion(titulo, genero, duracion);
+                    } else {
+                        cout << "[WARN] Cancion ignorada por duracion invalida: " << linea << endl;
+                    }
                 }
             }
         }
@@ -131,10 +186,10 @@ void Sistema::cargarCanciones() {
 }
 
 void Sistema::cargarPlayList() {
-    ifstream archivo("playList.csv");
+    ifstream archivo;
     string linea;
 
-    if (archivo.is_open()) {
+    if (abrirCSV(archivo, "playList.csv")) {
         getline(archivo, linea); // Saltar cabecera [cite: 128]
 
         while (getline(archivo, linea)) {
@@ -155,12 +210,12 @@ void Sistema::cargarPlayList() {
                     Artista *a = artistas->buscar(nombreArtista);
                     if (a != nullptr) {
                         // 3. Buscar la canción dentro del artista
-                        Cancion c;
-                        if (a->buscarCancion(nombreCancion, c)) {
+                        Cancion *c = a->buscarCancionPtr(nombreCancion);
+                        if (c != nullptr) {
                             // 4. Crear la playlist en el usuario si no existe [cite: 74, 75, 127]
                             u->crearPlayList(nombrePL);
                             // 5. Añadir la canción encontrada a esa playlist [cite: 76, 127]
-                            u->anadirCancionAPlayList(nombrePL, &c);
+                            u->anadirCancionAPlayList(nombrePL, c);
                         }
                     }
                 }
@@ -182,6 +237,10 @@ void Sistema::mostrarArtistas() const {
 }
 
 void Sistema::compartirPlayList(string nombreOrigen, string nombrePL, string nombreDestino) {
+    nombreOrigen = limpiarExtremos(nombreOrigen);
+    nombrePL = limpiarExtremos(nombrePL);
+    nombreDestino = limpiarExtremos(nombreDestino);
+
     // 1. Localizar al usuario que comparte [cite: 141]
     Usuario *emisor = usuarios->buscar(nombreOrigen);
     // 2. Localizar al usuario receptor [cite: 143]
@@ -205,6 +264,8 @@ void Sistema::compartirPlayList(string nombreOrigen, string nombrePL, string nom
 }
 
 void Sistema::buscarUsuario(string apellidosNombre) {
+    apellidosNombre = limpiarExtremos(apellidosNombre);
+
     Usuario *u = usuarios->buscar(apellidosNombre);
     if (u != nullptr) {
         cout << "\n--------------------------------------" << endl;
@@ -214,5 +275,82 @@ void Sistema::buscarUsuario(string apellidosNombre) {
         cout << "--------------------------------------" << endl;
     } else {
         cout << "[!] El usuario '" << apellidosNombre << "' no existe en el sistema." << endl;
+    }
+}
+
+void Sistema::buscarArtista(string nombre) {
+    nombre = limpiarExtremos(nombre);
+
+    Artista *a = artistas->buscar(nombre);
+    if (a != nullptr) {
+        cout << "\n--------------------------------------" << endl;
+        a->mostrar();
+        cout << "--------------------------------------" << endl;
+    } else {
+        cout << "[!] El artista '" << nombre << "' no existe en el sistema." << endl;
+    }
+}
+
+void Sistema::eliminarPlayList(string nombreUsuario, string nombrePL) {
+    nombreUsuario = limpiarExtremos(nombreUsuario);
+    nombrePL = limpiarExtremos(nombrePL);
+
+    Usuario *u = usuarios->buscar(nombreUsuario);
+    if (u == nullptr) {
+        cout << "[ERROR] El usuario '" << nombreUsuario << "' no existe." << endl;
+        return;
+    }
+
+    if (u->eliminarPlayList(nombrePL)) {
+        cout << "[SISTEMA] PlayList '" << nombrePL << "' eliminada de "
+             << nombreUsuario << endl;
+    } else {
+        cout << "[ERROR] La PlayList '" << nombrePL << "' no existe para ese usuario." << endl;
+    }
+}
+
+void Sistema::anadirArtistaFavorito(string nombreUsuario, string nombreArtista) {
+    nombreUsuario = limpiarExtremos(nombreUsuario);
+    nombreArtista = limpiarExtremos(nombreArtista);
+
+    Usuario *u = usuarios->buscar(nombreUsuario);
+    Artista *a = artistas->buscar(nombreArtista);
+
+    if (u == nullptr) {
+        cout << "[ERROR] El usuario '" << nombreUsuario << "' no existe." << endl;
+        return;
+    }
+    if (a == nullptr) {
+        cout << "[ERROR] El artista '" << nombreArtista << "' no existe." << endl;
+        return;
+    }
+
+    u->insertarArtistaFavorito(a);
+    cout << "[SISTEMA] Artista '" << nombreArtista << "' anadido a favoritos de "
+         << nombreUsuario << endl;
+}
+
+void Sistema::eliminarArtistaFavorito(string nombreUsuario, string nombreArtista) {
+    nombreUsuario = limpiarExtremos(nombreUsuario);
+    nombreArtista = limpiarExtremos(nombreArtista);
+
+    Usuario *u = usuarios->buscar(nombreUsuario);
+    if (u == nullptr) {
+        cout << "[ERROR] El usuario '" << nombreUsuario << "' no existe." << endl;
+        return;
+    }
+
+    u->eliminarArtistaFavorito(nombreArtista);
+    cout << "[SISTEMA] Si existia, el artista '" << nombreArtista
+         << "' se ha eliminado de favoritos de " << nombreUsuario << endl;
+}
+
+void Sistema::mostrarArtistaConMasSeguidores() const {
+    Artista *a = artistas->artistaConMasSeguidores();
+    if (a != nullptr) {
+        cout << "\nArtista con mas seguidores:" << endl;
+        a->mostrar();
+    } else {
+        cout << "[!] No hay artistas en el sistema." << endl;
     }
 }
